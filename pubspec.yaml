@@ -1,0 +1,41 @@
+name: tolong_s_application1
+description: A new Flutter project.
+version: 1.0.0+1
+environment: 
+  sdk: '>=2.12.0 <3.0.0'
+dependencies: 
+  flutter: 
+    sdk: flutter
+  cached_network_image: ^3.3.0
+  table_calendar: ^3.0.9
+  http: ^0.13.3
+  get: ^4.6.6
+  flutter_localizations:
+    sdk: flutter
+  # date_time_picker: "^2.1.0"
+  # google_fonts: ^6.2.0
+  flutter_riverpod: ^1.0.3
+  flutter_svg: ^2.0.9
+  intl: ^0.18.1
+dev_dependencies: 
+  flutter_test: 
+    sdk: flutter
+flutter: 
+  uses-material-design: true
+  assets: 
+    - assets/
+    - assets/images/
+    - assets/images/renaldi.jpeg
+    - assets/images/poli.png
+  fonts: 
+    - family: Poppins
+      fonts: 
+        - asset: assets/fonts/PoppinsSemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/PoppinsBold.ttf
+          weight: 700
+        - asset: assets/fonts/PoppinsMedium.ttf
+          weight: 500
+
+
+          
