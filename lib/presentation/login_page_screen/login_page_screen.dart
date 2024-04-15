@@ -17,7 +17,6 @@ class LoginPageScreen extends StatefulWidget {
 
 class _LoginPageScreenState extends State<LoginPageScreen> {
   TextEditingController logonikloginpageController = TextEditingController();
-
   TextEditingController logokatasandiloginpageController =
       TextEditingController();
   bool _isLoading = false;
@@ -30,9 +29,8 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
     final String nik = logonikloginpageController.text;
     final String kata_sandi = logokatasandiloginpageController.text;
 
-
     final url =
-        'http://172.16.110.31/projek/connect.php'; // Ganti dengan URL login.php Anda
+        'http://192.168.18.29/projek/connect.php'; // Ganti dengan URL login.php Anda
 
     try {
       final response = await http.post(

@@ -69,7 +69,7 @@ class _BerandaState extends State<Beranda> {
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
                                         image: AssetImage(
-                                          'assets/images/renaldi.jpeg',
+                                          'assets/images/chael.jpeg',
                                         ),
                                       ),
                                       borderRadius: BorderRadius.circular(25),
@@ -83,7 +83,7 @@ class _BerandaState extends State<Beranda> {
                                   SizedBox(width: 11),
                                   SizedBox(
                                     child: Text(
-                                      "Halo Renaldi",
+                                      "Halo Michael",
                                       overflow: TextOverflow.ellipsis,
                                       style: CustomTextStyles.poppin15,
                                     ),
