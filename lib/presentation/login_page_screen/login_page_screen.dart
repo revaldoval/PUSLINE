@@ -30,7 +30,7 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
     final String kata_sandi = logokatasandiloginpageController.text;
 
     final url =
-        'http://192.168.18.29/projek/connect.php'; // Ganti dengan URL login.php Anda
+        'http://192.168.1.10/projek/login.php'; // Ganti dengan URL login.php Anda
 
     try {
       final response = await http.post(

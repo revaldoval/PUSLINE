@@ -14,15 +14,16 @@ class Imunisasi extends StatefulWidget {
 
 class _ImunisasiState extends State<Imunisasi> {
   late TextEditingController _dateController;
-  late TextEditingController _timeController;
-  String? _selectedDoctor;
+  // late TextEditingController _timeController:
+  TextEditingController _doctorController =
+      TextEditingController(text: 'Dr. Michael Revaldo');
   late TextEditingController _complaintController;
 
   @override
   void initState() {
     super.initState();
     _dateController = TextEditingController();
-    _timeController = TextEditingController();
+    // _timeController = TextEditingController();
     _complaintController = TextEditingController();
   }
 
@@ -88,61 +89,44 @@ class _ImunisasiState extends State<Imunisasi> {
                   ),
                 ),
               ),
+              // SizedBox(height: 20),
+              // TextFormField(
+              //   controller: _timeController,
+              //   readOnly: true,
+              //   decoration: InputDecoration(
+              //     hintText: "Jam Periksa",
+              //     hintStyle: CustomTextStyles.poppins13,
+              //     border: OutlineInputBorder(
+              //       borderSide: BorderSide(color: Color(0xFF15AFA7)),
+              //     ),
+              //     enabledBorder: OutlineInputBorder(
+              //       borderSide: BorderSide(color: Color(0xFF15AFA7)),
+              //     ),
+              //     focusedBorder: OutlineInputBorder(
+              //       borderSide: BorderSide(color: Color(0xFF15AFA7)),
+              //     ),
+              //     suffixIcon: IconButton(
+              //       icon: Icon(Icons.access_time),
+              //       onPressed: () async {
+              //         final TimeOfDay? pickedTime = await showTimePicker(
+              //           context: context,
+              //           initialTime: TimeOfDay.now(),
+              //         );
+              //         if (pickedTime != null) {
+              //           setState(() {
+              //             _timeController.text =
+              //                 "${pickedTime.hour}:${pickedTime.minute}";
+              //           });
+              //         }
+              //       },
+              //     ),
+              //   ),
+              // ),
               SizedBox(height: 20),
               TextFormField(
-                controller: _timeController,
+                controller: TextEditingController(text: 'Dr. Michael Revaldo'),
                 readOnly: true,
                 decoration: InputDecoration(
-                  hintText: "Jam Periksa",
-                  hintStyle: CustomTextStyles.poppins13,
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF15AFA7)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF15AFA7)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF15AFA7)),
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.access_time),
-                    onPressed: () async {
-                      final TimeOfDay? pickedTime = await showTimePicker(
-                        context: context,
-                        initialTime: TimeOfDay.now(),
-                      );
-                      if (pickedTime != null) {
-                        setState(() {
-                          _timeController.text =
-                              "${pickedTime.hour}:${pickedTime.minute}";
-                        });
-                      }
-                    },
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              DropdownButtonFormField<String>(
-                value: _selectedDoctor,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedDoctor = value;
-                  });
-                },
-                items: ['Dr. Michael Revaldo', 'Dr. Renaldi Diiii']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: CustomTextStyles.poppins13
-                          .copyWith(color: Colors.black),
-                    ),
-                  );
-                }).toList(),
-                decoration: InputDecoration(
-                  hintText: "Nama Dokter",
-                  hintStyle: CustomTextStyles.poppins13,
                   border: OutlineInputBorder(
                     borderSide: BorderSide(color: Color(0xFF15AFA7)),
                   ),
@@ -153,7 +137,9 @@ class _ImunisasiState extends State<Imunisasi> {
                     borderSide: BorderSide(color: Color(0xFF15AFA7)),
                   ),
                 ),
+                style: CustomTextStyles.poppins13.copyWith(color: Colors.black),
               ),
+
               SizedBox(height: 20),
               TextFormField(
                 controller: _complaintController,
@@ -259,39 +245,7 @@ class _ImunisasiState extends State<Imunisasi> {
                                     ),
                                   ),
                                   ElevatedButton(
-                                    onPressed: () {
-                                      if (_dateController.text.isNotEmpty &&
-                                          _timeController.text.isNotEmpty &&
-                                          _selectedDoctor != null &&
-                                          _complaintController
-                                              .text.isNotEmpty) {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                HomePageScreen(),
-                                          ),
-                                        );
-                                      } else {
-                                        Navigator.of(context).pop();
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                            title: Text('Error'),
-                                            content: Text(
-                                              'Silakan lengkapi semua data.',
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: Text('OK'),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      }
-                                    },
+                                    onPressed: () {},
                                     style: ElevatedButton.styleFrom(
                                       primary: Color(0xFF15AFA7),
                                       shape: RoundedRectangleBorder(
@@ -344,7 +298,7 @@ class _ImunisasiState extends State<Imunisasi> {
   @override
   void dispose() {
     _dateController.dispose();
-    _timeController.dispose();
+    // _timeController.dispose();
     _complaintController.dispose();
     super.dispose();
   }
