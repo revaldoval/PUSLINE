@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:tolong_s_application1/core/app_export.dart';
 import 'package:http/http.dart' as http;
 import 'package:tolong_s_application1/theme/ApiService.dart';
+import '../models/user_model_baru.dart';
+import '../models/user_provider.dart';
+import 'package:provider/provider.dart';
 
 // ignore_for_file: must_be_immutable
 class LoginPageScreen extends StatefulWidget {
@@ -21,74 +24,215 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
   TextEditingController logokatasandiloginpageController =
       TextEditingController();
   bool _isLoading = false;
+  final ApiService apiService = ApiService();
 
-  Future<void> _login() async {
-    setState(() {
-      _isLoading = true;
-    });
+  void _login(BuildContext context) async {
+    String nik = logonikloginpageController.text;
+    String kata_sandi = logokatasandiloginpageController.text;
 
-    final String nik = logonikloginpageController.text;
-    final String kata_sandi = logokatasandiloginpageController.text;
-
-    final String apiUrl = ApiService.url('login.php').toString(); // Ganti dengan URL login.php Anda
+    // Validasi form, misalnya memastikan semua field terisi dengan benar
 
     try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        body: jsonEncode({
-          'nik': nik,
-          'kata_sandi': kata_sandi,
-        }),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      );
+      Map<String, dynamic> response = await apiService.login(nik, kata_sandi);
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        if (data['status'] == 'success') {
-          // Login berhasil, lakukan navigasi ke halaman berikutnya
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => HomePageScreen()));
-        } else {
-          // Login gagal, tampilkan pesan kesalahan
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: Text('Login Gagal'),
-              content: Text(data['message']),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text('OK'),
-                ),
-              ],
-            ),
-          );
-        }
+      print('Response from server: $response'); // Cetak respons ke konsol
+
+      if (response['status'] == 'success') {
+        print('Login successful');
+        // Tambahkan logika navigasi atau tindakan setelah login berhasil
+
+        // Set the user data using the provider
+        context.read<UserProvider>().setUserBaru(
+              UserModelBaru(
+                nik: response['nik'] ?? '',
+                nama: response['nama'] ?? '',
+                tanggal_lahir: response['tanggal_lahir'] ?? '',
+                jenis_kelamin: response['jenis_kelamin'] ?? '',
+                no_telepon: response['no_telepon'] ?? '',
+                img_profil: response['img_profil'] ?? '',
+                kode_otp: response['kode_otp'] ?? '',
+                created_at: response['created_at'] ?? '',
+                updated_at: response['updated_at'] ??
+                    '', // Pastikan urutan parameter sesuai
+              ),
+            );
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePageScreen(),
+          ),
+        );
+      } else if (response['status'] == 'errorValid') {
+        alert(context, "username atau sandi tidak valid");
       } else {
-        throw Exception('Gagal melakukan request ke server');
+        print('Login failed: ${response['message']}');
+
+        alert(context, "terjadi kesalahan pada jaringan");
       }
-    } catch (error) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Error'),
-          content: Text('Terjadi kesalahan: $error'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('OK'),
-            ),
-          ],
-        ),
-      );
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
+    } catch (e) {
+      print('Error during login: $e');
+      // Tambahkan logika penanganan jika terjadi error
     }
   }
+
+  void alert(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: contentBox(context, message),
+        );
+      },
+    );
+  }
+
+  Widget contentBox(BuildContext context, String message) {
+    return Stack(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.only(
+            left: 20,
+            top: 45,
+            right: 20,
+            bottom: 20,
+          ),
+          margin: EdgeInsets.only(top: 45),
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black,
+                offset: Offset(0, 10),
+                blurRadius: 10,
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                'Gagal Login!',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 15),
+              Text(
+                message,
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 22),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    'OKE',
+                    style: TextStyle(color: Color.fromRGBO(203, 164, 102, 1)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          top: 0,
+          left: 20,
+          right: 20,
+          child: CircleAvatar(
+            backgroundColor: Colors.redAccent,
+            radius: 30,
+            child: Icon(
+              Icons.error_outline,
+              color: Colors.white,
+              size: 40,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+  // Future<void> _login() async {
+  //   setState(() {
+  //     _isLoading = true;
+  //   });
+
+  //   final String nik = logonikloginpageController.text;
+  //   final String kata_sandi = logokatasandiloginpageController.text;
+
+  //   final String apiUrl = ApiService.url('login.php').toString(); // Ganti dengan URL login.php Anda
+
+  //   try {
+  //     final response = await http.post(
+  //       Uri.parse(apiUrl),
+  //       body: jsonEncode({
+  //         'nik': nik,
+  //         'kata_sandi': kata_sandi,
+  //       }),
+  //       headers: <String, String>{
+  //         'Content-Type': 'application/json; charset=UTF-8',
+  //       },
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       final data = jsonDecode(response.body);
+  //       if (data['status'] == 'success') {
+  //         // Login berhasil, lakukan navigasi ke halaman berikutnya
+  //         Navigator.push(context,
+  //             MaterialPageRoute(builder: (context) => HomePageScreen()));
+  //       } else {
+  //         // Login gagal, tampilkan pesan kesalahan
+  //         showDialog(
+  //           context: context,
+  //           builder: (context) => AlertDialog(
+  //             title: Text('Login Gagal'),
+  //             content: Text(data['message']),
+  //             actions: [
+  //               TextButton(
+  //                 onPressed: () => Navigator.pop(context),
+  //                 child: Text('OK'),
+  //               ),
+  //             ],
+  //           ),
+  //         );
+  //       }
+  //     } else {
+  //       throw Exception('Gagal melakukan request ke server');
+  //     }
+  //   } catch (error) {
+  //     showDialog(
+  //       context: context,
+  //       builder: (context) => AlertDialog(
+  //         title: Text('Error'),
+  //         content: Text('Terjadi kesalahan: $error'),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () => Navigator.pop(context),
+  //             child: Text('OK'),
+  //           ),
+  //         ],
+  //       ),
+  //     );
+  //   } finally {
+  //     setState(() {
+  //       _isLoading = false;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +294,7 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
                     text: "MASUK",
                     margin: EdgeInsets.only(left: 45.h, right: 44.h),
                     onPressed: () {
-                      _login();
+                      _login(context);
                     },
                   ),
                   SizedBox(height: 18.v),

@@ -4,6 +4,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'core/app_export.dart';
 import '../presentation/screen_poli/poliumum.dart';
+import 'package:provider/provider.dart';
+import '../presentation/models/user_provider.dart';
 
 var globalMessengerKey = GlobalKey<ScaffoldMessengerState>();
 void main() {
@@ -14,9 +16,22 @@ void main() {
 
   ///Please update theme as per your need if required.
   ThemeHelper().changeTheme('primary');
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => UserProvider(),
+      child: MyApp(),
+    ),
+  );
 }
 
+// void main() {
+//   runApp(
+//     ChangeNotifierProvider(
+//       create: (context) => UserProvider(),
+//       child: MyApp(),
+//     ),
+//   );
+// }
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

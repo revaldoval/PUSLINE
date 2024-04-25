@@ -69,77 +69,77 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
     super.dispose();
   }
 
-  Future<void> showAlert(
-      BuildContext context, String title, String content) async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(content),
-        );
-      },
-    );
+  // Future<void> showAlert(
+  //     BuildContext context, String title, String content) async {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text(title),
+  //         content: Text(content),
+  //       );
+  //     },
+  //   );
 
-    await Future.delayed(Duration(seconds: 2));
-    Navigator.of(context).pop();
-  }
+  //   await Future.delayed(Duration(seconds: 2));
+  //   Navigator.of(context).pop();
+  // }
 
-  Future<void> registerUser() async {
-    if (logonikregisterpageController.text.isEmpty ||
-        logonamaregisterpagController.text.isEmpty ||
-        _jenisKelaminController.text.isEmpty ||
-        selectedDate.toString().isEmpty ||
-        iconnomorteleponregisterController.text.isEmpty ||
-        iconkatasandiregisterpagController.text.isEmpty) {
-      showAlert(context, "Gagal", "Semua field harus diisi");
-    } else {
-      // if (!RegExp(r'^[0-9]{10,15}$')
-      //     .hasMatch(iconnomorteleponregisterController.text)) {
-      //   showAlert(context, "Gagal", "Format Nomor Telepon tidak valid");
-      //   return;
-      // }
+  // Future<void> registerUser() async {
+  //   if (logonikregisterpageController.text.isEmpty ||
+  //       logonamaregisterpagController.text.isEmpty ||
+  //       _jenisKelaminController.text.isEmpty ||
+  //       selectedDate.toString().isEmpty ||
+  //       iconnomorteleponregisterController.text.isEmpty ||
+  //       iconkatasandiregisterpagController.text.isEmpty) {
+  //     showAlert(context, "Gagal", "Semua field harus diisi");
+  //   } else {
+  //     // if (!RegExp(r'^[0-9]{10,15}$')
+  //     //     .hasMatch(iconnomorteleponregisterController.text)) {
+  //     //   showAlert(context, "Gagal", "Format Nomor Telepon tidak valid");
+  //     //   return;
+  //     // }
 
-      try {
-      final String apiUrl = ApiService.url('register.php').toString();
+  //     try {
+  //     final String apiUrl = ApiService.baseurl('register.php').toString();
 
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: jsonEncode({
-          "nik": logonikregisterpageController.text,
-          "nama": logonamaregisterpagController.text,
-          "jenis_kelamin": _jenisKelaminController.text,
-          "tanggal_lahir": selectedDate.toString(),
-          "no_telepon": iconnomorteleponregisterController.text,
-          "kata_sandi": iconkatasandiregisterpagController.text,
-        }),
-      );
+  //     final response = await http.post(
+  //       Uri.parse(apiUrl),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Accept': 'application/json',
+  //       },
+  //       body: jsonEncode({
+  //         "nik": logonikregisterpageController.text,
+  //         "nama": logonamaregisterpagController.text,
+  //         "jenis_kelamin": _jenisKelaminController.text,
+  //         "tanggal_lahir": selectedDate.toString(),
+  //         "no_telepon": iconnomorteleponregisterController.text,
+  //         "kata_sandi": iconkatasandiregisterpagController.text,
+  //       }),
+  //     );
 
-      if (response.statusCode == 200) {
-        print("Reponse = " + response.body.toString());
-        Future.delayed(Duration(seconds: 2), () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => LoginPageScreen()),
-          );
-        });
-      } else {
-        final errorMessage =
-            jsonDecode(response.body)['message'] ?? "Gagal mendaftarkan user";
-        showAlert(context, "Gagal", errorMessage);
-        print("error" + response.body.toString());
-      }
-      } catch (e) {
+  //     if (response.statusCode == 200) {
+  //       print("Reponse = " + response.body.toString());
+  //       Future.delayed(Duration(seconds: 2), () {
+  //         Navigator.pushReplacement(
+  //           context,
+  //           MaterialPageRoute(builder: (context) => LoginPageScreen()),
+  //         );
+  //       });
+  //     } else {
+  //       final errorMessage =
+  //           jsonDecode(response.body)['message'] ?? "Gagal mendaftarkan user";
+  //       showAlert(context, "Gagal", errorMessage);
+  //       print("error" + response.body.toString());
+  //     }
+  //     } catch (e) {
 
-        showAlert(
-            context, "Error", "Terjadi kesalahan. Silakan coba lagi nanti.");
-      }
-    }
-  }
+  //       showAlert(
+  //           context, "Error", "Terjadi kesalahan. Silakan coba lagi nanti.");
+  //     }
+  //   }
+  // }
 
   Widget build(BuildContext context) {
     return SafeArea(
@@ -452,7 +452,7 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
         text: "Daftar",
         margin: EdgeInsets.only(left: 45.h, right: 44.h, bottom: 53.v),
         onPressed: () {
-          registerUser();
+          // registerUser();
         });
   }
 
