@@ -10,6 +10,7 @@ dependencies:
   table_calendar: ^3.0.9
   http: ^0.13.3
   get: ^4.6.6
+  provider: ^6.1.1
   flutter_localizations:
     sdk: flutter
   # date_time_picker: "^2.1.0"

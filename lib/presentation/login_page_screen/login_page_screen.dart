@@ -6,6 +6,7 @@ import 'package:tolong_s_application1/widgets/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:tolong_s_application1/core/app_export.dart';
 import 'package:http/http.dart' as http;
+import 'package:tolong_s_application1/theme/ApiService.dart';
 
 // ignore_for_file: must_be_immutable
 class LoginPageScreen extends StatefulWidget {
@@ -29,12 +30,11 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
     final String nik = logonikloginpageController.text;
     final String kata_sandi = logokatasandiloginpageController.text;
 
-    final url =
-        'http://192.168.1.10/projek/login.php'; // Ganti dengan URL login.php Anda
+    final String apiUrl = ApiService.url('login.php').toString(); // Ganti dengan URL login.php Anda
 
     try {
       final response = await http.post(
-        Uri.parse(url),
+        Uri.parse(apiUrl),
         body: jsonEncode({
           'nik': nik,
           'kata_sandi': kata_sandi,

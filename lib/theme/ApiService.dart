@@ -1,6 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:uuid/uuid.dart';
+
 class ApiService {
   static Uri url(url) {
-    Uri Server = Uri.parse("http://192.168.1.10/projek/" + url);
+    Uri Server = Uri.parse("http://z/projek/" + url);
     return Server;
   }
 //  static String urlString(String url) {
@@ -16,4 +21,36 @@ class ApiService {
   //   String Server = "assets/images/" + url;
   //   return Server;
   // }
+
+
+  
+    Future<Map<String, dynamic>> daftarpoli(String nik,
+      String id_poli , String tanggal_pendaftaran, String deskripsi_keluhan, String antrian) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$Uri/pendaftaranpoli.php'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'nik': nik,
+          'id_poli': id_poli,
+          'tanggal_pendaftaran': tanggal_pendaftaran,
+          'deskripsi_keluhan': deskripsi_keluhan,
+          'antrian': antrian,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        return responseData;
+      } else {
+        throw Exception(
+            'Registration failed. Server error: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error during registration: $e');
+    }
+  }
+  
 }

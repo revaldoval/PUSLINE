@@ -100,7 +100,7 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
       //   return;
       // }
 
-      // try {
+      try {
       final String apiUrl = ApiService.url('register.php').toString();
 
       final response = await http.post(
@@ -133,12 +133,11 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
         showAlert(context, "Gagal", errorMessage);
         print("error" + response.body.toString());
       }
-      // } catch (e) {
-      //   print('Error: $e');
+      } catch (e) {
 
-      //   showAlert(
-      //       context, "Error", "Terjadi kesalahan. Silakan coba lagi nanti.");
-      // }
+        showAlert(
+            context, "Error", "Terjadi kesalahan. Silakan coba lagi nanti.");
+      }
     }
   }
 
