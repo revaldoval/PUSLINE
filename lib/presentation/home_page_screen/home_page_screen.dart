@@ -5,6 +5,10 @@ import 'package:tolong_s_application1/presentation/home_page_screen/artikel.dart
 import 'package:tolong_s_application1/presentation/home_page_screen/beranda.dart';
 import 'package:tolong_s_application1/presentation/home_page_screen/notifikasi.dart';
 import 'package:tolong_s_application1/presentation/home_page_screen/profil.dart';
+import '../models/user_model_baru.dart';
+import '../models/user_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:tolong_s_application1/theme/ApiService.dart';
 
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({Key? key}) : super(key: key);
@@ -24,6 +28,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ApiService apiService = ApiService();
+    UserModelBaru? user = context.watch<UserProvider>().userBaru;
     final _listPage = <Widget>[
       Beranda(),
       Notifikasi(),

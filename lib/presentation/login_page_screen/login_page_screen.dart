@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:tolong_s_application1/presentation/home_page_screen/beranda.dart';
 import 'package:tolong_s_application1/presentation/home_page_screen/home_page_screen.dart';
 import 'package:tolong_s_application1/widgets/custom_text_form_field.dart';
 import 'package:tolong_s_application1/widgets/custom_elevated_button.dart';
@@ -60,7 +61,7 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePageScreen(),
+            builder: (context) => Beranda(),
           ),
         );
       } else if (response['status'] == 'errorValid') {

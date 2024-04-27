@@ -23,6 +23,7 @@ class Imunisasi extends StatefulWidget {
 
 class _ImunisasiState extends State<Imunisasi> {
   String selectedPoli = 'POLI01';
+  String selectedantrian = 'POLI01';
   late String antrian;
   late TextEditingController _dateController;
   // late TextEditingController _timeController;
@@ -348,10 +349,10 @@ class _ImunisasiState extends State<Imunisasi> {
         Provider.of<UserProvider>(context, listen: false).userBaru;
 
     // String nik = logonikregisterpageController.text;
-    String id_poli = selectedPoli;
+    String id_poli = selectedPoli.toString();
     String tanggal_pendaftaran = _dateController.text;
     String deskripsi_keluhan = _complaintController.text;
-    String antrian = nomorantrian.toString();
+    String antrian = selectedantrian.toString();
 
     // Validasi form, misalnya memastikan semua field terisi dengan benar
 

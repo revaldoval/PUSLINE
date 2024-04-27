@@ -10,6 +10,10 @@ import '../screen_poli/polikia.dart';
 import '../screen_poli/polimtbs.dart';
 import '../screen_poli/imunisasi.dart';
 import '../login_page_screen/login_page_screen.dart';
+import '../models/user_model_baru.dart';
+import '../models/user_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:tolong_s_application1/theme/ApiService.dart';
 
 class Beranda extends StatefulWidget {
   const Beranda({Key? key}) : super(key: key);
@@ -29,6 +33,8 @@ class _BerandaState extends State<Beranda> {
 
   @override
   Widget build(BuildContext context) {
+    ApiService apiService = ApiService();
+    UserModelBaru? user = context.watch<UserProvider>().userBaru;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       localizationsDelegates: [

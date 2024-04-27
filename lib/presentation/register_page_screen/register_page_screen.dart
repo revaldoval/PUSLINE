@@ -30,6 +30,8 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
   TextEditingController iconkatasandiregisterpagController =
       TextEditingController();
 
+  final ApiService apiService = ApiService();
+
   bool isObscure = true;
   FocusNode _nikFocus = FocusNode();
   FocusNode _namaFocus = FocusNode();
@@ -68,6 +70,145 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
     _katasandiFocus.dispose();
     super.dispose();
   }
+
+//   void _register() async {
+//     String nik = logonikregisterpageController.text;
+//     String nama = logonamaregisterpagController.text;
+//     String jenis_kelamin = _jenisKelaminController.text;
+//     String tanggal_lahir = selectedDate.toString();
+//     String no_telepon = iconnomorteleponregisterController.text;
+//     String kata_sandi = iconkatasandiregisterpagController.text;
+
+//     // Validasi form, misalnya memastikan semua field terisi dengan benar
+//     if (nik.isEmpty ||
+//         nama.isEmpty ||
+//         jenis_kelamin.isEmpty ||
+//         tanggal_lahir.isEmpty ||
+//         no_telepon.isEmpty ||
+//         kata_sandi.isEmpty) {
+//       // Tampilkan pesan alert jika ada field yang kosong
+//       alert(context, "Harap lengkapi semua data.", "gagal mendaftar!",Icons.error, Colors.red);
+//       return;
+//     } else if (kata_sandi == kata_sandi) {
+//       try {
+//         Map<String, dynamic> response =
+//             await apiService.register(nik, nama, jenis_kelamin, tanggal_lahir, no_telepon);
+
+//         if (response['status'] == 'success') {
+//           print('Registration successful');
+
+//           Navigator.push(
+//             context,
+//             MaterialPageRoute(
+//               builder: (context) => LoginPageScreen(),
+//             ),
+
+//           );
+//           alert(context, "Silahkan Masuk","Berhasil Mendaftar!",Icons.check, Colors.green);
+//         } else {
+//           print('Registration failed: ${response['message']}');
+//           // Tambahkan logika penanganan jika registrasi gagal
+//         }
+//       } catch (e) {
+//         print('Error during registration: $e');
+//         // Tambahkan logika penanganan jika terjadi error
+//       }
+//     } else {
+//       alert(context, "Sandi dan konfirmasi sandi tidak sesuai.", "gagal mendaftar!", Icons.error,Colors.red);
+//     }
+//   }
+// }
+
+// void alert(BuildContext context, String message, String title, IconData icon, Color color) {
+//   showDialog(
+//     context: context,
+//     builder: (BuildContext context) {
+//       return Dialog(
+//         shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(10.0),
+//         ),
+//         elevation: 0,
+//         backgroundColor: Colors.transparent,
+//         child: contentBox(context, message, title, icon, color),
+//       );
+//     },
+//   );
+// }
+
+// Widget contentBox(BuildContext context, String message, String title, IconData icon, Color color) {
+//   return Stack(
+//     children: <Widget>[
+//       Container(
+//         padding: EdgeInsets.only(
+//           left: 20,
+//           top: 45,
+//           right: 20,
+//           bottom: 20,
+//         ),
+//         margin: EdgeInsets.only(top: 45),
+//         decoration: BoxDecoration(
+//           shape: BoxShape.rectangle,
+//           color: Colors.white,
+//           borderRadius: BorderRadius.circular(10),
+//           boxShadow: [
+//             BoxShadow(
+//               color: Colors.black,
+//               offset: Offset(0, 10),
+//               blurRadius: 10,
+//             ),
+//           ],
+//         ),
+//         child: Column(
+//           mainAxisSize: MainAxisSize.min,
+//           children: <Widget>[
+//             Text(
+//               title,
+//               style: TextStyle(
+//                 fontSize: 20,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//             SizedBox(height: 15),
+//             Text(
+//               message,
+//               style: TextStyle(
+//                 fontSize: 18,
+//               ),
+//               textAlign: TextAlign.center,
+//             ),
+//             SizedBox(height: 22),
+//             Align(
+//               alignment: Alignment.bottomRight,
+//               child: TextButton(
+//                 onPressed: () {
+//                   Navigator.of(context).pop();
+//                 },
+//                 child: Text(
+//                   'OKE',
+//                   style: TextStyle(color: Color.fromRGBO(203, 164, 102, 1)),
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//       Positioned(
+//         top: 0,
+//         left: 20,
+//         right: 20,
+//         child: CircleAvatar(
+//           backgroundColor: color,
+//           radius: 30,
+//           child: Icon(
+//             icon,
+//             color: Colors.white,
+//             size: 40,
+//           ),
+//         ),
+//       ),
+//     ],
+//   );
+// }
 
   // Future<void> showAlert(
   //     BuildContext context, String title, String content) async {
@@ -453,6 +594,7 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
         margin: EdgeInsets.only(left: 45.h, right: 44.h, bottom: 53.v),
         onPressed: () {
           // registerUser();
+          _register();
         });
   }
 
@@ -465,4 +607,146 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
   onTapDaftar(BuildContext context) {
     Navigator.pushNamed(context, AppRoutes.loginPageScreen);
   }
+
+  void _register() async {
+    String nik = logonikregisterpageController.text;
+    String nama = logonamaregisterpagController.text;
+    String jenis_kelamin = _jenisKelaminController.text;
+    String tanggal_lahir = selectedDate.toString();
+    String no_telepon = iconnomorteleponregisterController.text;
+    String kata_sandi = iconkatasandiregisterpagController.text;
+
+    // Validasi form, misalnya memastikan semua field terisi dengan benar
+    if (nik.isEmpty ||
+        nama.isEmpty ||
+        jenis_kelamin.isEmpty ||
+        tanggal_lahir.isEmpty ||
+        no_telepon.isEmpty ||
+        kata_sandi.isEmpty) {
+      // Tampilkan pesan alert jika ada field yang kosong
+      alert(context, "Harap lengkapi semua data.", "gagal mendaftar!",
+          Icons.error, Colors.red);
+      return;
+    } else if (kata_sandi == kata_sandi) {
+      try {
+        Map<String, dynamic> response = await apiService.register(
+            nik, nama, jenis_kelamin, tanggal_lahir, no_telepon, kata_sandi);
+
+        if (response['status'] == 'success') {
+          print('Registration successful');
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LoginPageScreen(),
+            ),
+          );
+          alert(context, "Silahkan Masuk", "Berhasil Mendaftar!", Icons.check,
+              Colors.green);
+        } else {
+          print('Registration failed: ${response['message']}');
+          // Tambahkan logika penanganan jika registrasi gagal
+        }
+      } catch (e) {
+        print('Error during registration: $e');
+        // Tambahkan logika penanganan jika terjadi error
+      }
+    } else {
+      alert(context, "Sandi dan konfirmasi sandi tidak sesuai.",
+          "gagal mendaftar!", Icons.error, Colors.red);
+    }
+  }
+}
+
+void alert(BuildContext context, String message, String title, IconData icon,
+    Color color) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: contentBox(context, message, title, icon, color),
+      );
+    },
+  );
+}
+
+Widget contentBox(BuildContext context, String message, String title,
+    IconData icon, Color color) {
+  return Stack(
+    children: <Widget>[
+      Container(
+        padding: EdgeInsets.only(
+          left: 20,
+          top: 45,
+          right: 20,
+          bottom: 20,
+        ),
+        margin: EdgeInsets.only(top: 45),
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black,
+              offset: Offset(0, 10),
+              blurRadius: 10,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 15),
+            Text(
+              message,
+              style: TextStyle(
+                fontSize: 18,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 22),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'OKE',
+                  style: TextStyle(color: Color.fromRGBO(203, 164, 102, 1)),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      Positioned(
+        top: 0,
+        left: 20,
+        right: 20,
+        child: CircleAvatar(
+          backgroundColor: color,
+          radius: 30,
+          child: Icon(
+            icon,
+            color: Colors.white,
+            size: 40,
+          ),
+        ),
+      ),
+    ],
+  );
 }

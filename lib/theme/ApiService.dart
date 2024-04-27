@@ -16,11 +16,47 @@ class ApiService {
 //     String Server = "http://172.17.202.43/Baticraft/baticraft/fh_db/images/" + url;
 //     return Server;
 //   }
-  final String baseUrl = "http://172.16.103.162/projek";
+  final String baseUrl = "http://192.168.0.102/projek";
   // static String urlGambar(url) {
   //   String Server = "assets/images/" + url;
   //   return Server;
   // }
+
+  Future<Map<String, dynamic>> register(
+      String nik,
+      String nama,
+      String jenis_kelamin,
+      String tanggal_lahir,
+      String no_telepon,
+      String kata_sandi) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/register.php'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'nik': nik,
+          'nama': nama,
+          'jenis_kelamin': jenis_kelamin,
+          'tanggal_lahir': tanggal_lahir,
+          'no_telepon': no_telepon,
+          'kata_sandi': kata_sandi,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        return responseData;
+      } else {
+        throw Exception(
+            'Registration failed. Server error: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error during registration: $e');
+    }
+  }
+
   Future<Map<String, dynamic>> login(String nik, String kata_sandi) async {
     try {
       final response = await http.post(
@@ -45,12 +81,8 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> daftarpoli(
-      String nik,
-      String id_poli,
-      String tanggal_pendaftaran,
-      String deskripsi_keluhan,
-      String antrian) async {
+  Future<Map<String, dynamic>> daftarpoli(String nik, String id_poli,
+      String tanggal_pendaftaran, String deskripsi_keluhan, String antrian) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/pendaftaranpoli.php'),
@@ -62,7 +94,7 @@ class ApiService {
           'id_poli': id_poli,
           'tanggal_pendaftaran': tanggal_pendaftaran,
           'deskripsi_keluhan': deskripsi_keluhan,
-          'antrian': antrian,
+          'antrian': antrian
         }),
       );
 
