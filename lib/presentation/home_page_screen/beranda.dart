@@ -154,7 +154,7 @@ class _BerandaState extends State<Beranda> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 13),
+                        SizedBox(height: 35),
                         SizedBox(
                           height: 250,
                           child: Column(

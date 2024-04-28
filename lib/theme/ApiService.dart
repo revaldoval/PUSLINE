@@ -81,21 +81,27 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> daftarpoli(String nik, String id_poli,
-      String tanggal_pendaftaran, String deskripsi_keluhan, String antrian) async {
+  Future<Map<String, dynamic>> daftarpoli(
+      String nik,
+      String id_poli,
+      String tanggal_pendaftaran,
+      String deskripsi_keluhan,
+      String status_pendaftaran,
+      String antrian) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/pendaftaranpoli.php'),
         headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: jsonEncode(<String, String>{
+        body: {
           'nik': nik,
           'id_poli': id_poli,
           'tanggal_pendaftaran': tanggal_pendaftaran,
           'deskripsi_keluhan': deskripsi_keluhan,
+          'status_pendaftaran': status_pendaftaran,
           'antrian': antrian
-        }),
+        },
       );
 
       if (response.statusCode == 200) {

@@ -13,6 +13,7 @@ import '../models/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
+import 'dart:async'; // Import library untuk menggunakan Timer
 
 class Imunisasi extends StatefulWidget {
   const Imunisasi({Key? key}) : super(key: key);
@@ -22,9 +23,9 @@ class Imunisasi extends StatefulWidget {
 }
 
 class _ImunisasiState extends State<Imunisasi> {
-  String selectedPoli = 'POLI01';
-  String selectedantrian = 'POLI01';
-  late String antrian;
+  String selectedPoli = 'POLI06';
+  String _statuspendaftaran = 'Diproses';
+
   late TextEditingController _dateController;
   // late TextEditingController _timeController;
   late TextEditingController _complaintController;
@@ -42,33 +43,72 @@ class _ImunisasiState extends State<Imunisasi> {
     // _NamaDokterController = TextEditingController(text: 'Dr. Michael Revaldo');
   }
 
-  void nomorantrian() {
-    antrian = generateAntrian().toString();
-  }
+  int currentAntrian = 0; // Variabel untuk melacak nomor antrian saat ini
+  String NoAntrian = ''; // Variabel untuk menyimpan nomor antrian
 
-  String generateAntrian() {
-    List<int> antrianList = [];
-    Random random = Random();
-
-    // Generate nomor antrian
-    for (int i = 1; i <= 10; i++) {
-      antrianList.add(i);
+  String nomorantrian() {
+    // Periksa apakah nomor antrian telah mencapai batas maksimum (50)
+    if (currentAntrian <= 4) {
+      // Jika belum mencapai batas maksimum, tambahkan 1 ke nomor antrian saat ini
+      currentAntrian++;
+    } else {
+      // Jika nomor antrian sudah mencapai 50, kembalikan ke nomor 1
+      // currentAntrian = 0;
+      // Atur ulang huruf tambahan jika diperlukan
+      resetAntrian();
     }
 
-    // Ambil nomor antrian secara acak dari daftar antrianList
-    int randomIndex = random.nextInt(antrianList.length);
-    return antrianList[randomIndex].toString();
+    // Set nilai antrian dengan nomor antrian saat ini
+    NoAntrian = currentAntrian.toString();
+
+    // Mengembalikan nilai antrian sebagai string
+    return NoAntrian;
   }
 
+  void resetAntrian() {
+    // Lakukan reset nomor antrian
+    NoAntrian = '0'; // Kembali ke nomor antrian 1
+
+    // Mengatur huruf tambahan jika nomor antrian mencapai 50
+    if (currentAntrian == 4) {
+      // Memperbarui huruf tambahan
+      String newFormat = _generateRandomFormat();
+      // Mengatur huruf tambahan untuk data baru
+      NoAntrian += '-' + newFormat;
+    }
+  }
+
+// Fungsi untuk menjalankan resetAntrian() setiap pukul 12 malam
+  void runResetAtMidnight() {
+    // Periksa waktu saat ini
+    DateTime now = DateTime.now();
+    // Hitung waktu yang tersisa hingga pukul 12 malam
+    DateTime nextMidnight = DateTime(now.year, now.month, now.day + 1);
+    Duration durationUntilMidnight = nextMidnight.difference(now);
+
+    // Buat timer untuk menjalankan resetAntrian() saat pukul 12 malam
+    Timer(Duration(milliseconds: durationUntilMidnight.inMilliseconds), () {
+      resetAntrian(); // Panggil fungsi resetAntrian()
+      runResetAtMidnight(); // Jalankan ulang fungsi runResetAtMidnight() untuk reset berikutnya
+    });
+  }
+
+// Fungsi untuk memperbarui format huruf tambahan
   String _generateRandomFormat() {
     List<String> formats = [
       'A',
       'B',
       'C',
-      'D'
+      'D',
     ]; // Ganti dengan format yang diinginkan
     Random random = Random();
     return formats[random.nextInt(formats.length)];
+  }
+
+// Jalankan resetAntrian() saat aplikasi dimulai
+  void main() {
+    nomorantrian(); // Jalankan nomorantrian() saat aplikasi dimulai
+    runResetAtMidnight(); // Jalankan runResetAtMidnight() saat aplikasi dimulai
   }
 
   @override
@@ -126,7 +166,7 @@ class _ImunisasiState extends State<Imunisasi> {
                       if (pickedDate != null) {
                         setState(() {
                           _dateController.text =
-                              "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                              "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
                         });
                       }
                     },
@@ -348,39 +388,38 @@ class _ImunisasiState extends State<Imunisasi> {
     UserModelBaru? user =
         Provider.of<UserProvider>(context, listen: false).userBaru;
 
-    // String nik = logonikregisterpageController.text;
-    String id_poli = selectedPoli.toString();
+    String nik = user!.nik;
+    String id_poli = 'POLI06'; // Change this to your selected poli ID
     String tanggal_pendaftaran = _dateController.text;
     String deskripsi_keluhan = _complaintController.text;
-    String antrian = selectedantrian.toString();
-
-    // Validasi form, misalnya memastikan semua field terisi dengan benar
+    String antrian =
+        nomorantrian(); // Menggunakan hasil dari pemanggilan nomorantrian()
+    String status_pendaftaran = 'Diproses';
+// Change this to your desired status
 
     try {
       ApiService apiService = new ApiService();
-      Map<String, dynamic> response = await apiService.daftarpoli(
-          user!.nik, id_poli, tanggal_pendaftaran, deskripsi_keluhan, antrian);
+      Map<String, dynamic> response = await apiService.daftarpoli(nik, id_poli,
+          tanggal_pendaftaran, deskripsi_keluhan, status_pendaftaran, antrian);
 
-      print('Response from server: $response'); // Cetak respons ke konsol
+      print('Response from server: $response'); // Print response to console
 
       if (response['status'] == 'success') {
-        print('sukses mengirim');
+        print('Success registering');
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Beranda(),
+            builder: (context) => HomePageScreen(),
           ),
         );
-        // Tambahkan logika navigasi atau tindakan setelah login berhasil
-
-        // Set the user data using the provider
-      } else if (response['status'] == 'errorValid') {
+        // Add navigation logic or actions after successful registration
       } else {
-        print('Login failed: ${response['message']}');
+        print('Registration failed: ${response['message']}');
+        // Handle registration failure here
       }
     } catch (e) {
-      print('Error during login: $e');
-      // Tambahkan logika penanganan jika terjadi error
+      print('Error during registration: $e');
+      // Handle registration error here
     }
   }
 

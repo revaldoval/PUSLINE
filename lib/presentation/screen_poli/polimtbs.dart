@@ -4,6 +4,16 @@ import 'package:tolong_s_application1/theme/custom_text_style.dart';
 import '../home_page_screen/beranda.dart';
 import '../home_page_screen/home_page_screen.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:tolong_s_application1/theme/ApiService.dart';
+import '../models/user_model.dart';
+import '../models/user_model_baru.dart';
+import '../models/user_provider.dart';
+import 'package:provider/provider.dart';
+import 'dart:math';
+import 'package:intl/intl.dart';
+import 'dart:async'; // Import library untuk menggunakan Timer
 
 class PoliMTBS extends StatefulWidget {
   const PoliMTBS({Key? key}) : super(key: key);
@@ -13,17 +23,92 @@ class PoliMTBS extends StatefulWidget {
 }
 
 class _PoliMTBSState extends State<PoliMTBS> {
+  String selectedPoli = 'POLI05';
+  String _statuspendaftaran = 'Diproses';
+
   late TextEditingController _dateController;
-  late TextEditingController _timeController;
-  String? _selectedDoctor;
+  // late TextEditingController _timeController;
   late TextEditingController _complaintController;
+  TextEditingController logonikregisterpageController = TextEditingController();
+  // TextEditingController _NamaDokterController =
+  //     TextEditingController(text: 'Dr. Michael Revaldo');
 
   @override
   void initState() {
     super.initState();
     _dateController = TextEditingController();
-    _timeController = TextEditingController();
+    // _timeController = TextEditingController();
     _complaintController = TextEditingController();
+    nomorantrian();
+    // _NamaDokterController = TextEditingController(text: 'Dr. Michael Revaldo');
+  }
+
+  int currentAntrian = 0; // Variabel untuk melacak nomor antrian saat ini
+  String NoAntrian = ''; // Variabel untuk menyimpan nomor antrian
+
+  String nomorantrian() {
+    // Periksa apakah nomor antrian telah mencapai batas maksimum (50)
+    if (currentAntrian <= 4) {
+      // Jika belum mencapai batas maksimum, tambahkan 1 ke nomor antrian saat ini
+      currentAntrian++;
+    } else {
+      // Jika nomor antrian sudah mencapai 50, kembalikan ke nomor 1
+      // currentAntrian = 0;
+      // Atur ulang huruf tambahan jika diperlukan
+      resetAntrian();
+    }
+
+    // Set nilai antrian dengan nomor antrian saat ini
+    NoAntrian = currentAntrian.toString();
+
+    // Mengembalikan nilai antrian sebagai string
+    return NoAntrian;
+  }
+
+  void resetAntrian() {
+    // Lakukan reset nomor antrian
+    NoAntrian = '0'; // Kembali ke nomor antrian 1
+
+    // Mengatur huruf tambahan jika nomor antrian mencapai 50
+    if (currentAntrian == 4) {
+      // Memperbarui huruf tambahan
+      String newFormat = _generateRandomFormat();
+      // Mengatur huruf tambahan untuk data baru
+      NoAntrian += '-' + newFormat;
+    }
+  }
+
+// Fungsi untuk menjalankan resetAntrian() setiap pukul 12 malam
+  void runResetAtMidnight() {
+    // Periksa waktu saat ini
+    DateTime now = DateTime.now();
+    // Hitung waktu yang tersisa hingga pukul 12 malam
+    DateTime nextMidnight = DateTime(now.year, now.month, now.day + 1);
+    Duration durationUntilMidnight = nextMidnight.difference(now);
+
+    // Buat timer untuk menjalankan resetAntrian() saat pukul 12 malam
+    Timer(Duration(milliseconds: durationUntilMidnight.inMilliseconds), () {
+      resetAntrian(); // Panggil fungsi resetAntrian()
+      runResetAtMidnight(); // Jalankan ulang fungsi runResetAtMidnight() untuk reset berikutnya
+    });
+  }
+
+// Fungsi untuk memperbarui format huruf tambahan
+  String _generateRandomFormat() {
+    List<String> formats = [
+      'A',
+      'B',
+      'C',
+      'D',
+    ]; // Ganti dengan format yang diinginkan
+    Random random = Random();
+    return formats[random.nextInt(formats.length)];
+  }
+
+// Jalankan resetAntrian() saat aplikasi dimulai
+  void main() {
+    nomorantrian(); // Jalankan nomorantrian() saat aplikasi dimulai
+    runResetAtMidnight(); // Jalankan runResetAtMidnight() saat aplikasi dimulai
   }
 
   @override
@@ -32,7 +117,7 @@ class _PoliMTBSState extends State<PoliMTBS> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          "Poli MTBS",
+          "Poli Imunisasi",
           style: CustomTextStyles.titleMediumMedium,
         ),
         centerTitle: true,
@@ -81,79 +166,65 @@ class _PoliMTBSState extends State<PoliMTBS> {
                       if (pickedDate != null) {
                         setState(() {
                           _dateController.text =
-                              "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                              "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
                         });
                       }
                     },
                   ),
                 ),
               ),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: _timeController,
-                readOnly: true,
-                decoration: InputDecoration(
-                  hintText: "Jam Periksa",
-                  hintStyle: CustomTextStyles.poppins13,
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF15AFA7)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF15AFA7)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF15AFA7)),
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.access_time),
-                    onPressed: () async {
-                      final TimeOfDay? pickedTime = await showTimePicker(
-                        context: context,
-                        initialTime: TimeOfDay.now(),
-                      );
-                      if (pickedTime != null) {
-                        setState(() {
-                          _timeController.text =
-                              "${pickedTime.hour}:${pickedTime.minute}";
-                        });
-                      }
-                    },
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              DropdownButtonFormField<String>(
-                value: _selectedDoctor,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedDoctor = value;
-                  });
-                },
-                items: ['Dr. Michael Revaldo', 'Dr. Renaldi Diiii']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: CustomTextStyles.poppins13
-                          .copyWith(color: Colors.black),
-                    ),
-                  );
-                }).toList(),
-                decoration: InputDecoration(
-                  hintText: "Nama Dokter",
-                  hintStyle: CustomTextStyles.poppins13,
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF15AFA7)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF15AFA7)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF15AFA7)),
-                  ),
-                ),
-              ),
+              // SizedBox(height: 20),
+              // TextFormField(
+              //   controller: _timeController,
+              //   readOnly: true,
+              //   decoration: InputDecoration(
+              //     hintText: "Jam Periksa",
+              //     hintStyle: CustomTextStyles.poppins13,
+              //     border: OutlineInputBorder(
+              //       borderSide: BorderSide(color: Color(0xFF15AFA7)),
+              //     ),
+              //     enabledBorder: OutlineInputBorder(
+              //       borderSide: BorderSide(color: Color(0xFF15AFA7)),
+              //     ),
+              //     focusedBorder: OutlineInputBorder(
+              //       borderSide: BorderSide(color: Color(0xFF15AFA7)),
+              //     ),
+              //     suffixIcon: IconButton(
+              //       icon: Icon(Icons.access_time),
+              //       onPressed: () async {
+              //         final TimeOfDay? pickedTime = await showTimePicker(
+              //           context: context,
+              //           initialTime: TimeOfDay.now(),
+              //         );
+              //         if (pickedTime != null) {
+              //           setState(() {
+              //             _timeController.text =
+              //                 "${pickedTime.hour}:${pickedTime.minute}";
+              //           });
+              //         }
+              //       },
+              //     ),
+              //   ),
+              // ),
+              // SizedBox(height: 20),
+              // TextFormField(
+              //   // controller: _NamaDokterController,
+              //   readOnly: true, // Membuat input tidak dapat diedit
+              //   decoration: InputDecoration(
+              //     hintText: "Dr. Michael Revaldo",
+              //     hintStyle: CustomTextStyles.poppins13,
+              //     border: OutlineInputBorder(
+              //       borderSide: BorderSide(color: Color(0xFF15AFA7)),
+              //     ),
+              //     enabledBorder: OutlineInputBorder(
+              //       borderSide: BorderSide(color: Color(0xFF15AFA7)),
+              //     ),
+              //     focusedBorder: OutlineInputBorder(
+              //       borderSide: BorderSide(color: Color(0xFF15AFA7)),
+              //     ),
+              //   ),
+              // ),
+
               SizedBox(height: 20),
               TextFormField(
                 controller: _complaintController,
@@ -205,7 +276,7 @@ class _PoliMTBSState extends State<PoliMTBS> {
                                 ),
                                 padding: EdgeInsets.all(15),
                                 child: Text(
-                                  'Daftar Pasien Poli MTBS',
+                                  'Daftar Pasien Poli Imunisasi',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.white,
@@ -219,7 +290,7 @@ class _PoliMTBSState extends State<PoliMTBS> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 20),
                                 child: Text(
-                                  'Yakin Ingin Daftar Poli MTBS?',
+                                  'Yakin Ingin Daftar Poli Imunisasi?',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.black,
@@ -235,7 +306,7 @@ class _PoliMTBSState extends State<PoliMTBS> {
                                 children: [
                                   ElevatedButton(
                                     onPressed: () {
-                                      Navigator.of(context).pop();
+                                      //
                                     },
                                     style: ElevatedButton.styleFrom(
                                       primary: Colors.white,
@@ -260,37 +331,8 @@ class _PoliMTBSState extends State<PoliMTBS> {
                                   ),
                                   ElevatedButton(
                                     onPressed: () {
-                                      if (_dateController.text.isNotEmpty &&
-                                          _timeController.text.isNotEmpty &&
-                                          _selectedDoctor != null &&
-                                          _complaintController
-                                              .text.isNotEmpty) {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                HomePageScreen(),
-                                          ),
-                                        );
-                                      } else {
-                                        Navigator.of(context).pop();
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                            title: Text('Error'),
-                                            content: Text(
-                                              'Silakan lengkapi semua data.',
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: Text('OK'),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      }
+                                      // datarpoliimunisasi(context);
+                                      datarpoliimunisasi(context);
                                     },
                                     style: ElevatedButton.styleFrom(
                                       primary: Color(0xFF15AFA7),
@@ -341,11 +383,125 @@ class _PoliMTBSState extends State<PoliMTBS> {
     );
   }
 
+//NANDO
+  void datarpoliimunisasi(BuildContext context) async {
+    UserModelBaru? user =
+        Provider.of<UserProvider>(context, listen: false).userBaru;
+
+    String nik = user!.nik;
+    String id_poli = 'POLI06'; // Change this to your selected poli ID
+    String tanggal_pendaftaran = _dateController.text;
+    String deskripsi_keluhan = _complaintController.text;
+    String antrian =
+        nomorantrian(); // Menggunakan hasil dari pemanggilan nomorantrian()
+    String status_pendaftaran = 'Diproses';
+// Change this to your desired status
+
+    try {
+      ApiService apiService = new ApiService();
+      Map<String, dynamic> response = await apiService.daftarpoli(nik, id_poli,
+          tanggal_pendaftaran, deskripsi_keluhan, status_pendaftaran, antrian);
+
+      print('Response from server: $response'); // Print response to console
+
+      if (response['status'] == 'success') {
+        print('Success registering');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePageScreen(),
+          ),
+        );
+        // Add navigation logic or actions after successful registration
+      } else {
+        print('Registration failed: ${response['message']}');
+        // Handle registration failure here
+      }
+    } catch (e) {
+      print('Error during registration: $e');
+      // Handle registration error here
+    }
+  }
+
+// CODE KE 2 GONE ALVIAN
+  // Future<void> showAlert(
+  //     BuildContext context, String title, String content) async {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text(title),
+  //         content: Text(content),
+  //       );
+  //     },
+  //   );
+
+  //   await Future.delayed(Duration(seconds: 2));
+  //   Navigator.of(context).pop();
+  // }
+
+  // Future<void> pendaftaranpoli() async {
+  //   // UserModelBaru? user =
+  //   //     Provider.of<UserProvider>(context, listen: false).userBaru;
+
+  //   if (logonikregisterpageController.text.isEmpty ||
+  //       selectedPoli.isEmpty ||
+  //       _dateController.text.isEmpty ||
+  //       _complaintController.text.isEmpty ||
+  //       nomorantrian.toString().isEmpty) {
+  //     showAlert(context, "Gagal", "Semua field harus diisi");
+  //   } else {
+  //     // if (!RegExp(r'^[0-9]{10,15}$')
+  //     //     .hasMatch(iconnomorteleponregisterController.text)) {
+  //     //   showAlert(context, "Gagal", "Format Nomor Telepon tidak valid");
+  //     //   return;
+  //     // }
+
+  //     try {
+  //       final String apiUrl = ApiService.url('pendaftaranpoli.php').toString();
+
+  //       final response = await http.post(
+  //         Uri.parse(apiUrl),
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Accept': 'application/json',
+  //         },
+  //         body: jsonEncode({
+  //           "nik": logonikregisterpageController.text,
+  //           "id_poli": selectedPoli,
+  //           "jenis_kelamin": _dateController.text,
+  //           "tanggal_lahir": _complaintController.text,
+  //           "antrian": nomorantrian.toString(),
+  //         }),
+  //       );
+
+  //       if (response.statusCode == 200) {
+  //         print("Reponse = " + response.body.toString());
+  //         Future.delayed(Duration(seconds: 2), () {
+  //           Navigator.pushReplacement(
+  //             context,
+  //             MaterialPageRoute(builder: (context) => Beranda()),
+  //           );
+  //         });
+  //       } else {
+  //         final errorMessage =
+  //             jsonDecode(response.body)['message'] ?? "Gagal mendaftarkan user";
+  //         showAlert(context, "Gagal", errorMessage);
+  //         print("error" + response.body.toString());
+  //       }
+  //     } catch (e) {
+  //       showAlert(
+  //           context, "Error", "Terjadi kesalahan. Silakan coba lagi nanti.");
+  //     }
+  //   }
+  // }
+
   @override
   void dispose() {
     _dateController.dispose();
-    _timeController.dispose();
+    // _timeController.dispose();
     _complaintController.dispose();
+
     super.dispose();
   }
 }

@@ -86,12 +86,12 @@ class NotifikasiBox extends StatelessWidget {
           // );
           Get.to(
             Selesai(),
-            transition: Transition.leftToRight,
+            transition: Transition.fadeIn,
           );
         } else if (title == "Sedang Diproses") {
-          Get.to(Diproses());
+          Get.to(Diproses(),transition: Transition.fadeIn,);
         } else if (title == "Ditolak Karena Berbahaya") {
-          Get.to(Ditolak());
+          Get.to(Ditolak(),transition: Transition.fadeIn,);
         }
       },
       child: Container(

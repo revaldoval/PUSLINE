@@ -61,7 +61,7 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Beranda(),
+            builder: (context) => HomePageScreen(),
           ),
         );
       } else if (response['status'] == 'errorValid') {
