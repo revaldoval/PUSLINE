@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tolong_s_application1/presentation/artikel_2/detail_artikel.dart';
+import 'package:tolong_s_application1/presentation/models/artikel_list_model.dart';
+import 'package:tolong_s_application1/theme/ApiService.dart';
 import 'package:tolong_s_application1/theme/custom_text_style.dart';
-import '../notifikasi_2/notifikasi_selesai.dart';
-import '../notifikasi_2/notifikasi_ditolak.dart';
-import '../notifikasi_2/notifiaksi_sedangdiproses.dart';
-import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Artikel extends StatefulWidget {
   const Artikel({Key? key}) : super(key: key);
@@ -14,6 +14,40 @@ class Artikel extends StatefulWidget {
 }
 
 class _ArtikelState extends State<Artikel> {
+  late Future<List<ArtikelListModel>> _artikelList;
+
+  @override
+  void initState() {
+    super.initState();
+    _artikelList = fetchArtikels();
+  }
+
+  Future<List<ArtikelListModel>> fetchArtikels() async {
+    final apiService = ApiService();
+    try {
+      final response = await http.get(
+          Uri.parse('${apiService.baseUrl}/artikel_list.php?id_artikel=1'));
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        if (responseData['status'] == 'success') {
+          final List<dynamic> jsonData = responseData['data'];
+          return jsonData
+              .map((item) => ArtikelListModel.fromJson(item))
+              .toList();
+        } else {
+          print(responseData['message']);
+          return []; // Handle API errors gracefully
+        }
+      } else {
+        throw Exception('Failed to load articles: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle network or other errors
+      print(error);
+      return [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,16 +62,32 @@ class _ArtikelState extends State<Artikel> {
           backgroundColor: Color(0xFF49A18C),
         ),
         body: Padding(
-          padding: EdgeInsets.only(top: 3), // Jarak antara app bar dan body
-          child: ListView.builder(
-            itemCount: 3, // Jumlah kotak notifikasi
-            itemBuilder: (BuildContext context, int index) {
-              return Padding(
-                padding: EdgeInsets.symmetric(
-                    vertical: 3,
-                    horizontal: 6), // Jarak antara kotak notifikasi
-                child: ArtikelBox(index: index),
-              );
+          padding: EdgeInsets.only(top: 3),
+          child: FutureBuilder<List<ArtikelListModel>>(
+            future: _artikelList,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final artikels = snapshot.data!;
+                if (artikels.isEmpty) {
+                  return Center(child: Text('No articles found'));
+                }
+                return ListView.builder(
+                  itemCount: artikels.length,
+                  itemBuilder: (context, index) {
+                    final artikel = artikels[index];
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: 3, horizontal: 6),
+                      child: ArtikelBox(
+                        artikel: artikel,
+                        apiService: ApiService(), // Pass ApiService instance
+                      ),
+                    );
+                  },
+                );
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
+              return Center(child: CircularProgressIndicator());
             },
           ),
         ),
@@ -47,53 +97,30 @@ class _ArtikelState extends State<Artikel> {
 }
 
 class ArtikelBox extends StatelessWidget {
-  final int index;
+  final ArtikelListModel artikel;
+  final ApiService apiService; // Add ApiService field
 
-  const ArtikelBox({
-    Key? key,
-    required this.index,
-  }) : super(key: key);
+  const ArtikelBox({Key? key, required this.artikel, required this.apiService})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    String title = "";
-    String subTitle1 = "";
-    String subTitle2 = "";
-    String image = "";
-
-    if (index == 0) {
-      title = "Pentingnya Imunisasi";
-      subTitle1 = "11 Maret 2024";
-      subTitle2 = "Imunisasi..";
-      image = "assets/images/refi.jpeg";
-    } else if (index == 1) {
-      title = "Pentingnya Imunisasi";
-      subTitle1 = "11 Maret 2024";
-      subTitle2 = "Imunisasi..";
-      image = "assets/images/eva.jpeg";
-    } else {
-      title = "Pentingnya Imunisasi";
-      subTitle1 = "11 Maret 2024";
-      subTitle2 = "Imunisasi..";
-      image = "assets/images/renaldi.jpeg";
-    }
+    final imageUrl = artikel.imgArtikel.isNotEmpty
+        ? Uri.http('172.16.110.41', artikel.imgArtikel).toString()
+        : 'assets/images/icon_artikel.png'; // Ganti dengan placeholder image
 
     return GestureDetector(
       onTap: () {
-        if (title == "Pentingnya Imunisasi") {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => ArtikelPage()),
-          // );
-          Get.to(ArtikelPage());
-        } else if (title == "Pentingnya Imunisasi") {
-          Get.to(ArtikelPage());
-        } else if (title == "Pentingnya Imunisasi") {
-          Get.to(ArtikelPage());
-        }
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                ArtikelPage(artikelId: int.parse(artikel.idArtikel)),
+          ),
+        );
       },
       child: Container(
-        height: 100,
+        height: 131,
         decoration: BoxDecoration(
           color: Color(0xffC4EFD2),
           borderRadius: BorderRadius.circular(7.0),
@@ -107,23 +134,33 @@ class ArtikelBox extends StatelessWidget {
               height: 80,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
+                // Menggunakan Image.network dengan URL yang sudah diformat dengan host
                 image: DecorationImage(
-                  image: AssetImage(image),
+                  image: NetworkImage(
+                      imageUrl), // Menggunakan URL gambar yang sudah diformat dengan host
                   fit: BoxFit.cover,
                 ),
               ),
             ),
             SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: CustomTextStyles.notifikasi,
-                ),
-                Text(subTitle1),
-                Text(subTitle2),
-              ],
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    artikel.judul,
+                    style: CustomTextStyles.notifikasi,
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    artikel.imgArtikel.isEmpty ? 'No Image Available' : '',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Color(0xff666666),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

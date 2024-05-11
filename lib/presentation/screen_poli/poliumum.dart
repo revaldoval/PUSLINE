@@ -383,7 +383,7 @@ class _PoliUmumState extends State<PoliUmum> {
     );
   }
 
-//NANDO
+
   void datarpoliimunisasi(BuildContext context) async {
     UserModelBaru? user =
         Provider.of<UserProvider>(context, listen: false).userBaru;
@@ -392,8 +392,7 @@ class _PoliUmumState extends State<PoliUmum> {
     String id_poli = 'POLI06'; // Change this to your selected poli ID
     String tanggal_pendaftaran = _dateController.text;
     String deskripsi_keluhan = _complaintController.text;
-    String antrian =
-        nomorantrian(); // Menggunakan hasil dari pemanggilan nomorantrian()
+    String antrian = NoAntrian; // Menggunakan hasil dari pemanggilan nomorantrian()
     String status_pendaftaran = 'Diproses';
 // Change this to your desired status
 
@@ -422,79 +421,6 @@ class _PoliUmumState extends State<PoliUmum> {
       // Handle registration error here
     }
   }
-
-// CODE KE 2 GONE ALVIAN
-  // Future<void> showAlert(
-  //     BuildContext context, String title, String content) async {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: Text(title),
-  //         content: Text(content),
-  //       );
-  //     },
-  //   );
-
-  //   await Future.delayed(Duration(seconds: 2));
-  //   Navigator.of(context).pop();
-  // }
-
-  // Future<void> pendaftaranpoli() async {
-  //   // UserModelBaru? user =
-  //   //     Provider.of<UserProvider>(context, listen: false).userBaru;
-
-  //   if (logonikregisterpageController.text.isEmpty ||
-  //       selectedPoli.isEmpty ||
-  //       _dateController.text.isEmpty ||
-  //       _complaintController.text.isEmpty ||
-  //       nomorantrian.toString().isEmpty) {
-  //     showAlert(context, "Gagal", "Semua field harus diisi");
-  //   } else {
-  //     // if (!RegExp(r'^[0-9]{10,15}$')
-  //     //     .hasMatch(iconnomorteleponregisterController.text)) {
-  //     //   showAlert(context, "Gagal", "Format Nomor Telepon tidak valid");
-  //     //   return;
-  //     // }
-
-  //     try {
-  //       final String apiUrl = ApiService.url('pendaftaranpoli.php').toString();
-
-  //       final response = await http.post(
-  //         Uri.parse(apiUrl),
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'Accept': 'application/json',
-  //         },
-  //         body: jsonEncode({
-  //           "nik": logonikregisterpageController.text,
-  //           "id_poli": selectedPoli,
-  //           "jenis_kelamin": _dateController.text,
-  //           "tanggal_lahir": _complaintController.text,
-  //           "antrian": nomorantrian.toString(),
-  //         }),
-  //       );
-
-  //       if (response.statusCode == 200) {
-  //         print("Reponse = " + response.body.toString());
-  //         Future.delayed(Duration(seconds: 2), () {
-  //           Navigator.pushReplacement(
-  //             context,
-  //             MaterialPageRoute(builder: (context) => Beranda()),
-  //           );
-  //         });
-  //       } else {
-  //         final errorMessage =
-  //             jsonDecode(response.body)['message'] ?? "Gagal mendaftarkan user";
-  //         showAlert(context, "Gagal", errorMessage);
-  //         print("error" + response.body.toString());
-  //       }
-  //     } catch (e) {
-  //       showAlert(
-  //           context, "Error", "Terjadi kesalahan. Silakan coba lagi nanti.");
-  //     }
-  //   }
-  // }
 
   @override
   void dispose() {

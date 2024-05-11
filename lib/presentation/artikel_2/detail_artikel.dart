@@ -1,70 +1,116 @@
 import 'package:flutter/material.dart';
+import 'package:tolong_s_application1/presentation/models/artikel_detail_model.dart';
+import 'package:tolong_s_application1/theme/ApiService.dart';
 import 'package:tolong_s_application1/theme/custom_text_style.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ArtikelPage extends StatelessWidget {
+  final int artikelId;
+
+  const ArtikelPage({
+    Key? key,
+    required this.artikelId,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text("Artikel", style: CustomTextStyles.titleMediumMedium),
-        centerTitle: true,
-        backgroundColor: Color(0xFF49A18C),
-        iconTheme: IconThemeData(color: Colors.white),
-        // automaticallyImplyLeading: false,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.all(16.0),
+    return FutureBuilder<ArtikelDetailModel?>(
+      future: fetchArtikelDetail(), // Mengambil data artikel detail
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final artikelDetail = snapshot.data!;
+          return Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              title: Text("Artikel", style: CustomTextStyles.titleMediumMedium),
+              centerTitle: true,
+              backgroundColor: Color(0xFF49A18C),
+              iconTheme: IconThemeData(color: Colors.white),
+            ),
+            body: SingleChildScrollView(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Mengatasi Stress dengan Bermain Game, Emang Bisa?",
-                    textAlign: TextAlign
-                        .center, // Mengatur teks berada di tengah secara horizontal
-                    style: TextStyle(
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0XFF15AFA7)),
-                    overflow: TextOverflow
-                        .ellipsis, // Jika lebih dari 12 karakter, ditampilkan ...
-                    maxLines: 1, // Hanya satu baris
-                  ),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.calendar_today),
-                      SizedBox(width: 5),
-                      Text("11/03/2024"),
-                      SizedBox(width: 20),
-                      Icon(Icons.person),
-                      SizedBox(width: 5),
-                      Text("Renaldi Diii"),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Image.asset(
-                    'assets/images/saberijo.jpg',
-                    width: double.infinity,
-                    height: 200,
-                    fit: BoxFit.cover,
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    "Bermain game dapat menjadi cara yang efektif untuk mengurangi stres bagi sebagian orang. Namun, pengalaman bermain game bisa berbeda tergantung pada jenis game yang dimainkan. Sebagai contoh, game seperti Mobile Legends dengan sifatnya yang sangat kompetitif dan atmosfer yang seringkali toksik dapat meningkatkan tingkat stres daripada menguranginya. Oleh karena itu, penting untuk memilih game yang memberikan kesenangan dan relaksasi yang sehat bagi pikiran dan tubuh Anda.",
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(fontSize: 16.0),
+                  Container(
+                    padding: EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          artikelDetail.judul,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 24.0,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0XFF15AFA7),
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.calendar_today),
+                            SizedBox(width: 5),
+                            Text(artikelDetail.tanggalPublikasi),
+                            SizedBox(width: 20),
+                            Icon(Icons.person),
+                            SizedBox(width: 5),
+                            Text(artikelDetail.namaPenulis),
+                          ],
+                        ),
+                        SizedBox(height: 20),
+                        // Menggunakan Image.network untuk mengambil gambar dari jaringan
+                        Image.network(
+                          artikelDetail.imgArtikel,
+                          width: double.infinity,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          artikelDetail.isiArtikel,
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
-      ),
+          );
+        } else if (snapshot.hasError) {
+          return Center(child: Text(snapshot.error.toString()));
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
     );
+  }
+
+  Future<ArtikelDetailModel?> fetchArtikelDetail() async {
+    final apiService = ApiService();
+    try {
+      final response = await http.get(Uri.parse(
+          '${apiService.baseUrl}/artikel_detail.php?id_artikel=$artikelId'));
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        if (responseData['status'] == 'success') {
+          return ArtikelDetailModel.fromJson(responseData['data']);
+        } else {
+          print(responseData['message']);
+          return null; // Handle API errors gracefully
+        }
+      } else {
+        throw Exception(
+            'Failed to load article details: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle network or other errors
+      print(error);
+      return null;
+    }
   }
 }

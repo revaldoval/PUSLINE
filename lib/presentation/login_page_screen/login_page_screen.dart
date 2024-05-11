@@ -49,6 +49,7 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
                 nama: response['nama'] ?? '',
                 tanggal_lahir: response['tanggal_lahir'] ?? '',
                 jenis_kelamin: response['jenis_kelamin'] ?? '',
+                email: response['email'] ?? '',
                 no_telepon: response['no_telepon'] ?? '',
                 img_profil: response['img_profil'] ?? '',
                 kode_otp: response['kode_otp'] ?? '',

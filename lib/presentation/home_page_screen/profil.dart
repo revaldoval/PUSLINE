@@ -98,7 +98,7 @@ class _ProfilState extends State<Profil> {
                     ),
                     child: Center(
                       child: Text(
-                        'Michael Jordan',
+                        'Renaldii Diii',
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.black,

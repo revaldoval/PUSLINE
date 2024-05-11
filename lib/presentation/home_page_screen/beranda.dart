@@ -66,40 +66,63 @@ class _BerandaState extends State<Beranda> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    alignment: Alignment.topLeft,
-                                    height: 45,
-                                    width: 45,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage(
-                                          'assets/images/chael.jpeg',
+                              Row(children: [
+                                Container(
+                                  alignment: Alignment.topLeft,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(25),
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      style: BorderStyle.solid,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: user != null &&
+                                          user!.img_profil != null
+                                      ? ClipOval(
+                                          child: Image.network(
+                                            apiService.fotoProfilUrl +
+                                                user!.img_profil!,
+                                            width: 45,
+                                            height: 45,
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              print(
+                                                  'Error loading image: $error');
+                                              return Image.asset(
+                                                'assets/images/null.jpg',
+                                                width: 45,
+                                                height: 45,
+                                                fit: BoxFit.cover,
+                                              );
+                                            },
+                                          ),
+                                        )
+                                      : ClipOval(
+                                          child: Image.asset(
+                                            'assets/images/null.jpeg',
+                                            width: 40,
+                                            height: 40,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
-                                      ),
-                                      borderRadius: BorderRadius.circular(25),
-                                      border: Border.all(
-                                        color: Colors.white,
-                                        style: BorderStyle.solid,
-                                        width: 2,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 11),
-                                  SizedBox(
-                                    child: Text(
-                                      "Halo Michael",
-                                      overflow: TextOverflow.ellipsis,
-                                      style: CustomTextStyles.poppin15,
-                                    ),
-                                  ),
-                                  Text(
-                                    ", Selamat Datang!",
+                                ),
+                                SizedBox(width: 11),
+                                FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: Text(
+                                    "Selamat Datang! " +
+                                        (user!.nama.toString().length > 10
+                                            ? user!.nama
+                                                    .toString()
+                                                    .substring(0, 10) +
+                                                "..."
+                                            : user!.nama.toString()),
                                     style: CustomTextStyles.poppin15,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ]),
                               Container(
                                 alignment: Alignment.topRight,
                                 child: ElevatedButton(
@@ -400,7 +423,6 @@ class Category extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(imagePath, width: 80),
-                SizedBox(height: 0),
                 Text(
                   title,
                   style: CustomTextStyles.poppin14,

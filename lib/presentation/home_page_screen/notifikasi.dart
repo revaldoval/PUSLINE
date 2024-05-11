@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tolong_s_application1/theme/custom_text_style.dart';
-import '../notifikasi_2/notifikasi_selesai.dart';
-import '../notifikasi_2/notifikasi_ditolak.dart';
-import '../notifikasi_2/notifiaksi_sedangdiproses.dart';
 import 'package:get/get.dart';
+import 'package:tolong_s_application1/theme/ApiService.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../models/notifikasi_model.dart'; // Ubah import sesuai dengan nama file model yang sesuai
+import '../models/user_model_baru.dart';
+import '../models/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class Notifikasi extends StatefulWidget {
   const Notifikasi({Key? key}) : super(key: key);
@@ -13,6 +17,43 @@ class Notifikasi extends StatefulWidget {
 }
 
 class _NotifikasiState extends State<Notifikasi> {
+  late Future<List<NotifikasiListModel>> _NotifikasiList;
+
+  @override
+  void initState() {
+    super.initState();
+    _NotifikasiList = fetchNotiications();
+  }
+
+  Future<List<NotifikasiListModel>> fetchNotiications() async {
+    final apiService = ApiService();
+    UserModelBaru? user =
+        Provider.of<UserProvider>(context, listen: false).userBaru;
+    final String nik = user!.nik;
+    try {
+      final response = await http
+          .get(Uri.parse('${apiService.baseUrl}/get_notifikasi.php?nik=$nik'));
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        if (responseData['status'] == 'success') {
+          final List<dynamic> jsonData = responseData['data'];
+          return jsonData
+              .map((item) => NotifikasiListModel.fromJson(item))
+              .toList();
+        } else {
+          print(responseData['message']);
+          return []; // Handle API errors gracefully
+        }
+      } else {
+        throw Exception('Failed to load articles: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle network or other errors
+      print(error);
+      return [];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,16 +68,32 @@ class _NotifikasiState extends State<Notifikasi> {
           backgroundColor: Color(0xFF49A18C),
         ),
         body: Padding(
-          padding: EdgeInsets.only(top: 3), // Jarak antara app bar dan body
-          child: ListView.builder(
-            itemCount: 3, // Jumlah kotak notifikasi
-            itemBuilder: (BuildContext context, int index) {
-              return Padding(
-                padding: EdgeInsets.symmetric(
-                    vertical: 3,
-                    horizontal: 6), // Jarak antara kotak notifikasi
-                child: NotifikasiBox(index: index),
-              );
+          padding: EdgeInsets.only(top: 3),
+          child: FutureBuilder<List<NotifikasiListModel>>(
+            future: _NotifikasiList,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final notifications = snapshot.data!;
+                if (notifications.isEmpty) {
+                  return Center(child: Text('No notifications found'));
+                }
+                return ListView.builder(
+                  itemCount: notifications.length,
+                  itemBuilder: (context, index) {
+                    final notifikasi = notifications[index];
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: 3, horizontal: 6),
+                      child: NotifBox(
+                        notifikasi: notifikasi,
+                        apiService: ApiService(), // Pass ApiService instance
+                      ),
+                    );
+                  },
+                );
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
+              return Center(child: CircularProgressIndicator());
             },
           ),
         ),
@@ -45,57 +102,39 @@ class _NotifikasiState extends State<Notifikasi> {
   }
 }
 
-class NotifikasiBox extends StatelessWidget {
-  final int index;
+class NotifBox extends StatelessWidget {
+  final NotifikasiListModel notifikasi;
+  final ApiService apiService; // Add ApiService field
 
-  const NotifikasiBox({
-    Key? key,
-    required this.index,
-  }) : super(key: key);
+  const NotifBox({Key? key, required this.notifikasi, required this.apiService})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    String title = "";
-    String subTitle1 = "";
-    String subTitle2 = "";
-    String image = "";
+    String imagePath = ''; // Default image path
 
-    if (index == 0) {
-      title = "Selesai";
-      subTitle1 = "Puskesman Gento";
-      subTitle2 = "Poli Gigi";
-      image = "assets/images/bhit.jpeg";
-    } else if (index == 1) {
-      title = "Sedang Diproses";
-      subTitle1 = "Puskesman Wong Magetan";
-      subTitle2 = "Imunisasi";
-      image = "assets/images/itsme.jpeg";
-    } else {
-      title = "Ditolak Karena Berbahaya";
-      subTitle1 = "Gasthof zum Pommer";
-      subTitle2 = "Vienna Academy of Fine Arts";
-      image = "assets/images/renaldi.jpeg";
+    // Set image path based on status_pendaftaran
+    switch (notifikasi.status_pendaftaran) {
+      case 'Ditolak':
+        imagePath = 'assets/images/notifditolak.png';
+        break;
+      case 'Diterima':
+        imagePath = 'assets/images/notifselesai.png';
+        break;
+      case 'Diproses':
+        imagePath = 'assets/images/notifproses.png';
+        break;
+      default:
+        // Default image if status_pendaftaran is not recognized
+        imagePath = 'assets/images/default.png';
     }
 
     return GestureDetector(
       onTap: () {
-        if (title == "Selesai") {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => Selesai()),
-          // );
-          Get.to(
-            Selesai(),
-            transition: Transition.fadeIn,
-          );
-        } else if (title == "Sedang Diproses") {
-          Get.to(Diproses(),transition: Transition.fadeIn,);
-        } else if (title == "Ditolak Karena Berbahaya") {
-          Get.to(Ditolak(),transition: Transition.fadeIn,);
-        }
+        // Add navigation functionality if needed
       },
       child: Container(
-        height: 100,
+        height: 111,
         decoration: BoxDecoration(
           color: Color(0xffC4EFD2),
           borderRadius: BorderRadius.circular(7.0),
@@ -110,22 +149,45 @@ class NotifikasiBox extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
-                  image: AssetImage(image),
+                  image:
+                      AssetImage(imagePath), // Use AssetImage for local images
                   fit: BoxFit.cover,
                 ),
               ),
             ),
             SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: CustomTextStyles.notifikasi,
-                ),
-                Text(subTitle1),
-                Text(subTitle2),
-              ],
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Pendaftaran Anda " + notifikasi.status_pendaftaran,
+                    style: notifikasi.status_pendaftaran == "Diproses"
+                        ? CustomTextStyles.notifikasi
+                        : notifikasi.status_pendaftaran == "Ditolak"
+                            ? CustomTextStyles.notifikasiditolak
+                            : CustomTextStyles.notifikaditerima,
+                  ),
+
+                  Text(
+                    notifikasi.tanggal_pendaftaran,
+                    style: CustomTextStyles.poppin12black,
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    notifikasi.jenis_poli,
+                    style: CustomTextStyles.poppin12black,
+                  ),
+                  SizedBox(height: 5),
+                  // Implementasi berdasarkan nilai status_pendaftaran
+                  if (notifikasi.status_pendaftaran == 'Ditolak')
+                    SizedBox(), // Tidak ada widget di sini
+                  if (notifikasi.status_pendaftaran == 'Diterima')
+                    SizedBox(), // Tidak ada widget di sini
+                  if (notifikasi.status_pendaftaran == 'Diproses')
+                    SizedBox(), // Tidak ada widget di sini
+                ],
+              ),
             ),
           ],
         ),

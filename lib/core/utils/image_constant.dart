@@ -25,6 +25,8 @@ class ImageConstant {
   static String imgIcontanggallahirRegisterpag =
       '$imagePath/img_icontanggallahir_registerpag.png';
 
+  static String imgIconEmail = '$imagePath/logoemail.png';
+  
   static String imgIconkatasandiregisterpag =
       '$imagePath/img_iconkatasandiregisterpag.png';
 

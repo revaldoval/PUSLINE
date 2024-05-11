@@ -3,6 +3,7 @@ class UserModelBaru {
   final String nama;
   final String tanggal_lahir;
   final String jenis_kelamin;
+  final String email;
   final String no_telepon;
   final dynamic img_profil;
   final dynamic kode_otp;
@@ -14,6 +15,7 @@ class UserModelBaru {
     required this.nama,
     required this.tanggal_lahir,
     required this.jenis_kelamin,
+    required this.email,
     required this.no_telepon,
     required this.img_profil,
     required this.kode_otp,

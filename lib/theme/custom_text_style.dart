@@ -32,9 +32,9 @@ class CustomTextStyles {
       );
   static get notifikasi => theme.textTheme.titleMedium!.copyWith(
       fontSize: 16.fSize, fontWeight: FontWeight.w500, color: Colors.black);
-  static get notifikasiijo => theme.textTheme.titleMedium!.copyWith(
+  static get notifikaditerima => theme.textTheme.titleMedium!.copyWith(
       fontSize: 16.fSize, fontWeight: FontWeight.w500, color: Colors.green);
-  static get notifikasimerah => theme.textTheme.titleMedium!.copyWith(
+  static get notifikasiditolak => theme.textTheme.titleMedium!.copyWith(
       fontSize: 16.fSize, fontWeight: FontWeight.w500, color: Colors.red);
 
   static get poppin15 => theme.textTheme.titleMedium!.copyWith(
@@ -45,6 +45,9 @@ class CustomTextStyles {
         fontSize: 14.fSize,
         fontWeight: FontWeight.w500,
       );
+  static get poppin14black => theme.textTheme.titleMedium!.copyWith(
+      fontSize: 14.fSize, fontWeight: FontWeight.w500, color: Colors.black);
+
   static get Poli => theme.textTheme.titleMedium!.copyWith(
         fontSize: 16.fSize,
         fontWeight: FontWeight.w500,
@@ -54,6 +57,8 @@ class CustomTextStyles {
         fontSize: 12.fSize,
         fontWeight: FontWeight.w500,
       );
+  static get poppin12black => theme.textTheme.titleMedium!.copyWith(
+      fontSize: 12.fSize, fontWeight: FontWeight.w500, color: Colors.black);
   static get titleSmallOnPrimaryContainer =>
       theme.textTheme.titleSmall!.copyWith(
         color: theme.colorScheme.onPrimaryContainer,

@@ -8,9 +8,10 @@ dependencies:
     sdk: flutter
   cached_network_image: ^3.3.0
   table_calendar: ^3.0.9
-  http: ^0.13.3
+  http: ^1.1.0
   get: ^4.6.6
   provider: ^6.1.1
+  email_otp: ^2.1.0
   flutter_localizations:
     sdk: flutter
   # date_time_picker: "^2.1.0"
@@ -28,6 +29,7 @@ flutter:
     - assets/images/
     - assets/images/renaldi.jpeg
     - assets/images/poli.png
+    - assets/images/icon_artikel.png
   fonts: 
     - family: Poppins
       fonts: 
