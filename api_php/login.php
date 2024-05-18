@@ -15,11 +15,13 @@ try {
         // Query untuk mencari pengguna dengan nik dan kata_sandi yang sesuai
         $query = "SELECT * FROM masyarakat WHERE nik = ? AND kata_sandi = ?";
         $stmt = $conn->prepare($query);
-        if (!$stmt) {
-            throw new Exception("Prepare statement failed: " . $conn->error);
-        }
+if (!$stmt) {
+    throw new Exception("Prepare statement failed: " . $conn->error);
+}
 
-        $stmt->execute([$nik, $kata_sandi]);
+$stmt->bind_param("ss", $nik, $kata_sandi); // Bind parameter-query
+$stmt->execute(); // Execute statement
+
 
         // Ambil hasil query
         $result = $stmt->get_result();

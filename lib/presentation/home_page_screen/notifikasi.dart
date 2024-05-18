@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tolong_s_application1/presentation/notifikasi_2/detail_notifikasi.dart';
 import 'package:tolong_s_application1/theme/custom_text_style.dart';
 import 'package:get/get.dart';
 import 'package:tolong_s_application1/theme/ApiService.dart';
@@ -131,6 +132,13 @@ class NotifBox extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) =>
+        //         DetailNotifikasi(id_pendaftaran: notifikasi.id_pendaftaran),
+        //   ),
+        // );
         // Add navigation functionality if needed
       },
       child: Container(

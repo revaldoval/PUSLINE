@@ -22,6 +22,8 @@ class _SandiBaruState extends State<SandiBaru> {
   final ApiService apiService = ApiService();
 
   @override
+  bool isObscureKatasandi = true;
+  bool isObscureKonfirmKatasandi = true;
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -53,6 +55,18 @@ class _SandiBaruState extends State<SandiBaru> {
                           width: 24,
                         ),
                       ),
+                      suffix: IconButton(
+                        icon: Icon(isObscureKatasandi
+                            ? Icons.visibility
+                            : Icons.visibility_off),
+                        onPressed: () {
+                          setState(() {
+                            isObscureKatasandi = !isObscureKatasandi;
+                          });
+                        },
+                        color: Colors.white,
+                      ),
+                      obscureText: isObscureKatasandi,
                       prefixConstraints: BoxConstraints(maxHeight: 42),
                       borderDecoration:
                           TextFormFieldStyleHelper.outlineOnPrimaryTL21,
@@ -77,6 +91,19 @@ class _SandiBaruState extends State<SandiBaru> {
                           width: 24,
                         ),
                       ),
+                      suffix: IconButton(
+                        icon: Icon(isObscureKonfirmKatasandi
+                            ? Icons.visibility
+                            : Icons.visibility_off),
+                        onPressed: () {
+                          setState(() {
+                            isObscureKonfirmKatasandi =
+                                !isObscureKonfirmKatasandi;
+                          });
+                        },
+                        color: Colors.white,
+                      ),
+                      obscureText: isObscureKonfirmKatasandi,
                       prefixConstraints: BoxConstraints(maxHeight: 42),
                       borderDecoration:
                           TextFormFieldStyleHelper.outlineOnPrimaryTL21,
@@ -84,20 +111,25 @@ class _SandiBaruState extends State<SandiBaru> {
                     SizedBox(height: 54),
                     CustomElevatedButton(
                       onPressed: () async {
+                        // Regex untuk memeriksa minimal satu huruf besar dan satu angka
+                        RegExp regex = RegExp(r'^(?=.*[A-Z])(?=.*\d).+$');
+
                         if (_passwordController.text !=
                             _confirmPasswordController.text) {
                           alert(
                               context,
                               "Kata sandi dan konfirmasi sandi tidak sesuai!",
-                              "Gagal mengubah sandi",
+                              "Gagal!",
                               Icons.error,
                               Colors.red);
                         } else if (_passwordController.text.length < 8 ||
-                            _confirmPasswordController.text.length < 8) {
+                            _confirmPasswordController.text.length < 8 ||
+                            !regex.hasMatch(_passwordController.text) ||
+                            !regex.hasMatch(_confirmPasswordController.text)) {
                           alert(
                               context,
-                              "Panjang sandi minimal 8 karakter",
-                              "Gagal melanjutkan proses lupa sandi! ",
+                              "Kata sandi minimal 8 karakter dengan setidaknya 1 huruf besar dan 1 angka diperlukan.",
+                              "Gagal!",
                               Icons.error,
                               Colors.red);
                         } else {
@@ -108,16 +140,17 @@ class _SandiBaruState extends State<SandiBaru> {
 
                             // Lakukan penanganan hasil jika diperlukan
                             print('Update successful: $result');
-
-                            // Tambahkan navigasi atau tindakan lain setelah berhasil diunggah
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => LoginPageScreen(),
                               ),
                             );
+                            alert(context, "Berhasil Mengubah Kata Sandi.",
+                                "Berhasil!", Icons.done, Colors.green);
+                            // Tambahkan navigasi atau tindakan lain setelah berhasil diunggah
                           } catch (e) {
-                            print('Error uploading image: $e');
+                            print('Error$e');
                             // Tambahkan penanganan kesalahan jika diperlukan
                           }
                         }
@@ -171,7 +204,6 @@ class _SandiBaruState extends State<SandiBaru> {
   onTapBUTTONKEMBALIRESET(BuildContext context) {
     // Navigator.pushNamed(context, AppRoutes.Otp);
   }
-
   void alert(BuildContext context, String message, String title, IconData icon,
       Color color) {
     showDialog(
@@ -240,7 +272,105 @@ class _SandiBaruState extends State<SandiBaru> {
                   },
                   child: Text(
                     'OKE',
-                    style: TextStyle(color: Color.fromRGBO(203, 164, 102, 1)),
+                    style: TextStyle(color: Color(0xFF49A18C)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          top: 0,
+          left: 20,
+          right: 20,
+          child: CircleAvatar(
+            backgroundColor: color,
+            radius: 30,
+            child: Icon(
+              icon,
+              color: Colors.white,
+              size: 40,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void succesalert(BuildContext context, String message, String title,
+      IconData icon, Color color) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: succescontentBox(context, message, title, icon, color),
+        );
+      },
+    );
+  }
+
+  Widget succescontentBox(BuildContext context, String message, String title,
+      IconData icon, Color color) {
+    return Stack(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.only(
+            left: 20,
+            top: 45,
+            right: 20,
+            bottom: 20,
+          ),
+          margin: EdgeInsets.only(top: 45),
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black,
+                offset: Offset(0, 10),
+                blurRadius: 10,
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 15),
+              Text(
+                message,
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 22),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginPageScreen(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'OKE',
+                    style: TextStyle(color: Color(0xFF49A18C)),
                   ),
                 ),
               ),

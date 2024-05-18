@@ -6,13 +6,14 @@ import 'package:tolong_s_application1/widgets/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:tolong_s_application1/core/app_export.dart';
 import 'package:email_otp/email_otp.dart';
+import 'package:tolong_s_application1/theme/ApiService.dart';
 
 // ignore_for_file: must_be_immutable
 class LupaPasswordNomorTeleponScreen extends StatelessWidget {
   LupaPasswordNomorTeleponScreen({Key? key}) : super(key: key);
 
-  TextEditingController iconEmailResetController =
-      TextEditingController();
+  TextEditingController iconEmailResetController = TextEditingController();
+  final ApiService apiService = ApiService();
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +36,7 @@ class LupaPasswordNomorTeleponScreen extends StatelessWidget {
                                     style: theme.textTheme.titleSmall)),
                             SizedBox(height: 1.v),
                             CustomTextFormField(
-                                controller:
-                                    iconEmailResetController,
+                                controller: iconEmailResetController,
                                 textInputAction: TextInputAction.done,
                                 prefix: Container(
                                     margin: EdgeInsets.fromLTRB(
@@ -51,46 +51,78 @@ class LupaPasswordNomorTeleponScreen extends StatelessWidget {
                                     .outlineOnPrimaryTL21),
                             SizedBox(height: 54.v),
                             CustomElevatedButton(
-                              text: "KIRIM",
-                              // margin: EdgeInsets.only(left: 45.h, right: 44.h, bottom: 53.v),
-        onPressed: () {
-          if (iconEmailResetController.text.isEmpty) {
-            alert(context, "Isi semua data terlebih dahulu", "Gagal mendaftar!",
-                Icons.error, Colors.red);
-          } else if (iconEmailResetController.text.length < 8) {
-            alert(context, "Panjang sandi minimal 8 karakter",
-                "Gagal mendaftar!", Icons.error, Colors.red);
-          } else {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => LupaOtp(
-                  email: iconEmailResetController.text,
-                ),
-              ),
-            );
-          }
-        }),
+                                text: "KIRIM",
+                                // margin: EdgeInsets.only(left: 45.h, right: 44.h, bottom: 53.v),
+                                onPressed: () async {
+                                  if (iconEmailResetController.text.isEmpty) {
+                                    alert(context, "Isi Email terlebih dahulu",
+                                        "Gagal!", Icons.error, Colors.red);
+                                  } else if (!_isValidEmail(
+                                      iconEmailResetController.text)) {
+                                    alert(context, "Format Email tidak valid",
+                                        "Gagal!", Icons.error, Colors.red);
+                                  } else {
+                                    try {
+                                      Map<String, dynamic> responseData =
+                                          await apiService.beforenext(
+                                              iconEmailResetController.text);
+                                      if (responseData['status'] == 'success') {
+                                        // Email is found, display error message
+                                        alert(context, responseData['message'],
+                                            "Gagal!", Icons.error, Colors.red);
+                                      } else {
+                                        // Email is not found, proceed to OTP page
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => LupaOtp(
+                                              email:
+                                                  iconEmailResetController.text,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    } catch (e) {
+                                      // Handle errors
+                                      print("Error: $e");
+                                      alert(
+                                          context,
+                                          "Terjadi kesalahan saat memeriksa email",
+                                          "Gagal!",
+                                          Icons.error,
+                                          Colors.red);
+                                    }
+                                  }
+                                }),
                             SizedBox(height: 5.v)
                           ]))
                 ]))));
   }
-void alert(BuildContext context, String message, String title, IconData icon,
-    Color color) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        child: contentBox(context, message, title, icon, color),
-      );
-    },
-  );
-}
+
+  bool _isValidEmail(String email) {
+    // Menggunakan regular expression untuk memeriksa format email
+    // Ini adalah contoh regular expression yang sederhana, Anda dapat menyesuaikan sesuai kebutuhan Anda
+    final RegExp emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    return emailRegex.hasMatch(email);
+  }
+
+  void alert(BuildContext context, String message, String title, IconData icon,
+      Color color) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: contentBox(context, message, title, icon, color),
+        );
+      },
+    );
+  }
+
   Widget contentBox(BuildContext context, String message, String title,
       IconData icon, Color color) {
     return Stack(
@@ -142,7 +174,7 @@ void alert(BuildContext context, String message, String title, IconData icon,
                   },
                   child: Text(
                     'OKE',
-                    style: TextStyle(color: Color.fromRGBO(203, 164, 102, 1)),
+                    style: TextStyle(color: Color(0xFF49A18C)),
                   ),
                 ),
               ),
@@ -166,6 +198,7 @@ void alert(BuildContext context, String message, String title, IconData icon,
       ],
     );
   }
+
   /// Section Widget
   Widget _buildMasukkanEmail(BuildContext context) {
     return Container(

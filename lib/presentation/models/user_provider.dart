@@ -2,8 +2,6 @@ import 'user_model_baru.dart';
 import 'package:flutter/material.dart';
 import 'user_model.dart';
 
-
-
 class UserProvider extends ChangeNotifier {
   UserModel? _user;
   UserModel? get user => _user;
@@ -16,8 +14,15 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-    void setUserBaru(UserModelBaru userBaru) {
+  void setUserBaru(UserModelBaru userBaru) {
     _userBaru = userBaru;
     notifyListeners();
   }
+
+  //   void updateUserFotoProfil(String newFotoProfil) {
+  //   if (_userBaru != null) {
+  //     _userBaru!.foto_profil = newFotoProfil;
+  //     notifyListeners(); // Notifikasi semua listener bahwa data telah berubah
+  //   }
+  // }
 }

@@ -13,7 +13,9 @@ import '../models/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
-import 'dart:async'; // Import library untuk menggunakan Timer
+import 'dart:async';
+
+import 'package:flutter_localizations/flutter_localizations.dart'; // Import library untuk menggunakan Timer
 
 class PoliGigi extends StatefulWidget {
   const PoliGigi({Key? key}) : super(key: key);
@@ -23,101 +25,98 @@ class PoliGigi extends StatefulWidget {
 }
 
 class _PoliGigiState extends State<PoliGigi> {
-  String selectedPoli = 'POLI06';
+  String selectedPoli = 'POLI02';
   String _statuspendaftaran = 'Diproses';
 
   late TextEditingController _dateController;
-  // late TextEditingController _timeController;
   late TextEditingController _complaintController;
   TextEditingController logonikregisterpageController = TextEditingController();
-  // TextEditingController _NamaDokterController =
-  //     TextEditingController(text: 'Dr. Michael Revaldo');
+
+  final List<DateTime> _holidays = [];
 
   @override
   void initState() {
     super.initState();
     _dateController = TextEditingController();
-    // _timeController = TextEditingController();
     _complaintController = TextEditingController();
     nomorantrian();
-    // _NamaDokterController = TextEditingController(text: 'Dr. Michael Revaldo');
   }
 
   int currentAntrian = 0; // Variabel untuk melacak nomor antrian saat ini
   String NoAntrian = ''; // Variabel untuk menyimpan nomor antrian
 
   String nomorantrian() {
-    // Periksa apakah nomor antrian telah mencapai batas maksimum (50)
     if (currentAntrian <= 4) {
-      // Jika belum mencapai batas maksimum, tambahkan 1 ke nomor antrian saat ini
       currentAntrian++;
     } else {
-      // Jika nomor antrian sudah mencapai 50, kembalikan ke nomor 1
-      // currentAntrian = 0;
-      // Atur ulang huruf tambahan jika diperlukan
       resetAntrian();
     }
-
-    // Set nilai antrian dengan nomor antrian saat ini
     NoAntrian = currentAntrian.toString();
-
-    // Mengembalikan nilai antrian sebagai string
     return NoAntrian;
   }
 
   void resetAntrian() {
-    // Lakukan reset nomor antrian
-    NoAntrian = '0'; // Kembali ke nomor antrian 1
-
-    // Mengatur huruf tambahan jika nomor antrian mencapai 50
+    NoAntrian = '0';
     if (currentAntrian == 4) {
-      // Memperbarui huruf tambahan
       String newFormat = _generateRandomFormat();
-      // Mengatur huruf tambahan untuk data baru
       NoAntrian += '-' + newFormat;
     }
   }
 
-// Fungsi untuk menjalankan resetAntrian() setiap pukul 12 malam
   void runResetAtMidnight() {
-    // Periksa waktu saat ini
     DateTime now = DateTime.now();
-    // Hitung waktu yang tersisa hingga pukul 12 malam
     DateTime nextMidnight = DateTime(now.year, now.month, now.day + 1);
     Duration durationUntilMidnight = nextMidnight.difference(now);
 
-    // Buat timer untuk menjalankan resetAntrian() saat pukul 12 malam
     Timer(Duration(milliseconds: durationUntilMidnight.inMilliseconds), () {
-      resetAntrian(); // Panggil fungsi resetAntrian()
-      runResetAtMidnight(); // Jalankan ulang fungsi runResetAtMidnight() untuk reset berikutnya
+      resetAntrian();
+      runResetAtMidnight();
     });
   }
 
-// Fungsi untuk memperbarui format huruf tambahan
   String _generateRandomFormat() {
-    List<String> formats = [
-      'A',
-      'B',
-      'C',
-      'D',
-    ]; // Ganti dengan format yang diinginkan
+    List<String> formats = ['A', 'B', 'C', 'D'];
     Random random = Random();
     return formats[random.nextInt(formats.length)];
   }
 
-// Jalankan resetAntrian() saat aplikasi dimulai
   void main() {
-    nomorantrian(); // Jalankan nomorantrian() saat aplikasi dimulai
-    runResetAtMidnight(); // Jalankan runResetAtMidnight() saat aplikasi dimulai
+    nomorantrian();
+    runResetAtMidnight();
+  }
+
+  bool isHoliday(DateTime date) {
+    if (date.weekday == DateTime.saturday || date.weekday == DateTime.sunday) {
+      return true;
+    }
+    for (DateTime holiday in _holidays) {
+      if (date.year == holiday.year &&
+          date.month == holiday.month &&
+          date.day == holiday.day) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @override
   Widget build(BuildContext context) {
+    MaterialApp(
+      supportedLocales: [
+        const Locale('en', ''), // English
+        const Locale('id', ''), // Indonesian
+      ],
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      // other MaterialApp properties...
+    );
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          "Poli Imunisasi",
+          "Poli Gigi",
           style: CustomTextStyles.titleMediumMedium,
         ),
         centerTitle: true,
@@ -157,74 +156,38 @@ class _PoliGigiState extends State<PoliGigi> {
                   suffixIcon: IconButton(
                     icon: Icon(Icons.calendar_today),
                     onPressed: () async {
+                      Intl.defaultLocale =
+                          'id_ID'; // Atur lokal ke bahasa Indonesia
+
                       final DateTime? pickedDate = await showDatePicker(
                         context: context,
                         initialDate: DateTime.now(),
-                        firstDate: DateTime(2000),
+                        firstDate: DateTime.now(),
                         lastDate: DateTime(2101),
+                        // locale: const Locale('id', 'ID'),
                       );
+
                       if (pickedDate != null) {
-                        setState(() {
-                          _dateController.text =
-                              "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
-                        });
+                        if (isHoliday(pickedDate)) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Tidak bisa memilih hari Sabtu dan Minggu.',
+                              ),
+                            ),
+                          );
+                        } else {
+                          setState(() {
+                            _dateController.text =
+                                DateFormat('yyyy-MM-dd', 'id_ID')
+                                    .format(pickedDate);
+                          });
+                        }
                       }
                     },
                   ),
                 ),
               ),
-              // SizedBox(height: 20),
-              // TextFormField(
-              //   controller: _timeController,
-              //   readOnly: true,
-              //   decoration: InputDecoration(
-              //     hintText: "Jam Periksa",
-              //     hintStyle: CustomTextStyles.poppins13,
-              //     border: OutlineInputBorder(
-              //       borderSide: BorderSide(color: Color(0xFF15AFA7)),
-              //     ),
-              //     enabledBorder: OutlineInputBorder(
-              //       borderSide: BorderSide(color: Color(0xFF15AFA7)),
-              //     ),
-              //     focusedBorder: OutlineInputBorder(
-              //       borderSide: BorderSide(color: Color(0xFF15AFA7)),
-              //     ),
-              //     suffixIcon: IconButton(
-              //       icon: Icon(Icons.access_time),
-              //       onPressed: () async {
-              //         final TimeOfDay? pickedTime = await showTimePicker(
-              //           context: context,
-              //           initialTime: TimeOfDay.now(),
-              //         );
-              //         if (pickedTime != null) {
-              //           setState(() {
-              //             _timeController.text =
-              //                 "${pickedTime.hour}:${pickedTime.minute}";
-              //           });
-              //         }
-              //       },
-              //     ),
-              //   ),
-              // ),
-              // SizedBox(height: 20),
-              // TextFormField(
-              //   // controller: _NamaDokterController,
-              //   readOnly: true, // Membuat input tidak dapat diedit
-              //   decoration: InputDecoration(
-              //     hintText: "Dr. Michael Revaldo",
-              //     hintStyle: CustomTextStyles.poppins13,
-              //     border: OutlineInputBorder(
-              //       borderSide: BorderSide(color: Color(0xFF15AFA7)),
-              //     ),
-              //     enabledBorder: OutlineInputBorder(
-              //       borderSide: BorderSide(color: Color(0xFF15AFA7)),
-              //     ),
-              //     focusedBorder: OutlineInputBorder(
-              //       borderSide: BorderSide(color: Color(0xFF15AFA7)),
-              //     ),
-              //   ),
-              // ),
-
               SizedBox(height: 20),
               TextFormField(
                 controller: _complaintController,
@@ -276,7 +239,7 @@ class _PoliGigiState extends State<PoliGigi> {
                                 ),
                                 padding: EdgeInsets.all(15),
                                 child: Text(
-                                  'Daftar Pasien Poli Imunisasi',
+                                  'Daftar Pasien',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.white,
@@ -290,7 +253,7 @@ class _PoliGigiState extends State<PoliGigi> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 20),
                                 child: Text(
-                                  'Yakin Ingin Daftar Poli Imunisasi?',
+                                  'Yakin Ingin Daftar Poli Gigi?',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.black,
@@ -306,7 +269,7 @@ class _PoliGigiState extends State<PoliGigi> {
                                 children: [
                                   ElevatedButton(
                                     onPressed: () {
-                                      //
+                                      Navigator.of(context).pop();
                                     },
                                     style: ElevatedButton.styleFrom(
                                       primary: Colors.white,
@@ -331,8 +294,32 @@ class _PoliGigiState extends State<PoliGigi> {
                                   ),
                                   ElevatedButton(
                                     onPressed: () {
-                                      // datarpoliimunisasi(context);
-                                      datarpoliimunisasi(context);
+                                      if (_dateController.text.isEmpty) {
+                                        // Tampilkan pesan kesalahan jika _dateController kosong
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text("Gagal!",
+                                                  textAlign: TextAlign.center),
+                                              content: Text(
+                                                  "Tanggal harus diisi.",
+                                                  textAlign: TextAlign.center),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  child: Text("OK"),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                )
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      } else {
+                                        // Lanjutkan proses jika _dateController tidak kosong
+                                        datarpoliimunisasi(context);
+                                      }
                                     },
                                     style: ElevatedButton.styleFrom(
                                       primary: Color(0xFF15AFA7),
@@ -383,26 +370,23 @@ class _PoliGigiState extends State<PoliGigi> {
     );
   }
 
-//NANDO
   void datarpoliimunisasi(BuildContext context) async {
     UserModelBaru? user =
         Provider.of<UserProvider>(context, listen: false).userBaru;
 
     String nik = user!.nik;
-    String id_poli = 'POLI02'; // Change this to your selected poli ID
+    String id_poli = 'POLI02';
     String tanggal_pendaftaran = _dateController.text;
     String deskripsi_keluhan = _complaintController.text;
-    String antrian =
-        nomorantrian(); // Menggunakan hasil dari pemanggilan nomorantrian()
+    String antrian = NoAntrian;
     String status_pendaftaran = 'Diproses';
-// Change this to your desired status
 
     try {
       ApiService apiService = new ApiService();
       Map<String, dynamic> response = await apiService.daftarpoli(nik, id_poli,
           tanggal_pendaftaran, deskripsi_keluhan, status_pendaftaran, antrian);
 
-      print('Response from server: $response'); // Print response to console
+      print('Response from server: $response');
 
       if (response['status'] == 'success') {
         print('Success registering');
@@ -412,96 +396,18 @@ class _PoliGigiState extends State<PoliGigi> {
             builder: (context) => HomePageScreen(),
           ),
         );
-        // Add navigation logic or actions after successful registration
       } else {
         print('Registration failed: ${response['message']}');
-        // Handle registration failure here
       }
     } catch (e) {
       print('Error during registration: $e');
-      // Handle registration error here
     }
   }
-
-// CODE KE 2 GONE ALVIAN
-  // Future<void> showAlert(
-  //     BuildContext context, String title, String content) async {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: Text(title),
-  //         content: Text(content),
-  //       );
-  //     },
-  //   );
-
-  //   await Future.delayed(Duration(seconds: 2));
-  //   Navigator.of(context).pop();
-  // }
-
-  // Future<void> pendaftaranpoli() async {
-  //   // UserModelBaru? user =
-  //   //     Provider.of<UserProvider>(context, listen: false).userBaru;
-
-  //   if (logonikregisterpageController.text.isEmpty ||
-  //       selectedPoli.isEmpty ||
-  //       _dateController.text.isEmpty ||
-  //       _complaintController.text.isEmpty ||
-  //       nomorantrian.toString().isEmpty) {
-  //     showAlert(context, "Gagal", "Semua field harus diisi");
-  //   } else {
-  //     // if (!RegExp(r'^[0-9]{10,15}$')
-  //     //     .hasMatch(iconnomorteleponregisterController.text)) {
-  //     //   showAlert(context, "Gagal", "Format Nomor Telepon tidak valid");
-  //     //   return;
-  //     // }
-
-  //     try {
-  //       final String apiUrl = ApiService.url('pendaftaranpoli.php').toString();
-
-  //       final response = await http.post(
-  //         Uri.parse(apiUrl),
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'Accept': 'application/json',
-  //         },
-  //         body: jsonEncode({
-  //           "nik": logonikregisterpageController.text,
-  //           "id_poli": selectedPoli,
-  //           "jenis_kelamin": _dateController.text,
-  //           "tanggal_lahir": _complaintController.text,
-  //           "antrian": nomorantrian.toString(),
-  //         }),
-  //       );
-
-  //       if (response.statusCode == 200) {
-  //         print("Reponse = " + response.body.toString());
-  //         Future.delayed(Duration(seconds: 2), () {
-  //           Navigator.pushReplacement(
-  //             context,
-  //             MaterialPageRoute(builder: (context) => Beranda()),
-  //           );
-  //         });
-  //       } else {
-  //         final errorMessage =
-  //             jsonDecode(response.body)['message'] ?? "Gagal mendaftarkan user";
-  //         showAlert(context, "Gagal", errorMessage);
-  //         print("error" + response.body.toString());
-  //       }
-  //     } catch (e) {
-  //       showAlert(
-  //           context, "Error", "Terjadi kesalahan. Silakan coba lagi nanti.");
-  //     }
-  //   }
-  // }
 
   @override
   void dispose() {
     _dateController.dispose();
-    // _timeController.dispose();
     _complaintController.dispose();
-
     super.dispose();
   }
 }

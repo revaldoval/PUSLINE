@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tolong_s_application1/presentation/notifikasi_2/detail_notifikasi.dart';
 import 'package:tolong_s_application1/presentation/screen_poli/poliumum.dart';
 import '../presentation/splash_screen/splash_screen.dart';
 import '../presentation/register_page_screen/register_page_screen.dart';
@@ -22,6 +23,8 @@ class AppRoutes {
 
   static const String appNavigationScreen = '/app_navigation_screen';
   static const String poliUmum = '/poliumum';
+    static const String detailNotifikasi = '/detail_notifikasi';
+  
   
 
   static Map<String, WidgetBuilder> routes = {
@@ -33,5 +36,6 @@ class AppRoutes {
         LupaPasswordNomorTeleponScreen(),
     appNavigationScreen: (context) => AppNavigationScreen(),
     poliUmum: (context) => PoliUmum(),
+    // detailNotifikasi: (context) => DetailNotifikasi(),
   };
 }

@@ -3,10 +3,10 @@ class UserModelBaru {
   final String nama;
   final String tanggal_lahir;
   final String jenis_kelamin;
-  final String email;
   final String no_telepon;
-  final dynamic img_profil;
-  final dynamic kode_otp;
+  final String email;
+  final String img_profil; // Ubah menjadi String
+  final String? kode_otp; // Ubah menjadi String?
   final String created_at;
   final String updated_at;
 
@@ -15,11 +15,28 @@ class UserModelBaru {
     required this.nama,
     required this.tanggal_lahir,
     required this.jenis_kelamin,
-    required this.email,
     required this.no_telepon,
-    required this.img_profil,
-    required this.kode_otp,
+    required this.email,
+    required this.img_profil, // Ubah menjadi String
+    this.kode_otp, // Ubah menjadi String?
     required this.created_at,
     required this.updated_at,
   });
+
+  factory UserModelBaru.fromJson(Map<String, dynamic> json) {
+    String imageUrl = json['img_profil'] ?? '';
+
+    return UserModelBaru(
+      nik: json['nik'] ?? '',
+      nama: json['nama'] ?? '',
+      tanggal_lahir: json['tanggal_lahir'] ?? '',
+      jenis_kelamin: json['jenis_kelamin'] ?? '',
+      no_telepon: json['no_telepon'] ?? '',
+      email: json['email'] ?? '',
+      img_profil: imageUrl,
+      kode_otp: json['kode_otp'], // Gunakan String? jika kode_otp dapat null
+      created_at: json['created_at'] ?? '',
+      updated_at: json['updated_at'] ?? '',
+    );
+  }
 }

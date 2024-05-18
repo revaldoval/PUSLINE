@@ -31,10 +31,26 @@ class _BerandaState extends State<Beranda> {
     });
   }
 
+  String _getGreeting(DateTime now) {
+    var hour = now.hour;
+    print("SEKARANG ADALAH JAM: " + hour.toString());
+    if (hour < 10) {
+      return "Selamat Pagi!";
+    } else if (hour < 15) {
+      return "Selamat Siang!";
+    } else if (hour < 18) {
+      return "Selamat Sore!";
+    } else {
+      return "Selamat Malam!";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ApiService apiService = ApiService();
     UserModelBaru? user = context.watch<UserProvider>().userBaru;
+    var now = DateTime.now();
+    var greeting = _getGreeting(now);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       localizationsDelegates: [
@@ -187,7 +203,7 @@ class _BerandaState extends State<Beranda> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Category(
-                                    imagePath: "assets/images/poli.png",
+                                    imagePath: "assets/images/PoliUmumBG.png",
                                     title: "Poli Umum",
                                     onPressed: () {
                                       Navigator.push(
@@ -199,7 +215,7 @@ class _BerandaState extends State<Beranda> {
                                     },
                                   ),
                                   Category(
-                                    imagePath: "assets/images/poli.png",
+                                    imagePath: "assets/images/GigiBG.png",
                                     title: "Poli Gigi",
                                     onPressed: () {
                                       Navigator.push(
@@ -211,7 +227,7 @@ class _BerandaState extends State<Beranda> {
                                     },
                                   ),
                                   Category(
-                                    imagePath: "assets/images/poli.png",
+                                    imagePath: "assets/images/PoliUmumBG.png",
                                     title: "Poli KIA",
                                     onPressed: () {
                                       Navigator.push(
@@ -229,7 +245,7 @@ class _BerandaState extends State<Beranda> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Category(
-                                    imagePath: "assets/images/poli.png",
+                                    imagePath: "assets/images/GiziBG.png",
                                     title: "Poli Gizi",
                                     onPressed: () {
                                       Navigator.push(
@@ -241,7 +257,7 @@ class _BerandaState extends State<Beranda> {
                                     },
                                   ),
                                   Category(
-                                    imagePath: "assets/images/poli.png",
+                                    imagePath: "assets/images/MtbsBG.png",
                                     title: "Poli MTBS",
                                     onPressed: () {
                                       Navigator.push(
@@ -253,7 +269,7 @@ class _BerandaState extends State<Beranda> {
                                     },
                                   ),
                                   Category(
-                                    imagePath: "assets/images/poli.png",
+                                    imagePath: "assets/images/ImunisasiBG.png",
                                     title: "Imunisasi",
                                     onPressed: () {
                                       Navigator.push(

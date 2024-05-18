@@ -14,7 +14,7 @@ void main() {
     DeviceOrientation.portraitUp,
   ]);
 
-  ///Please update theme as per your need if required.
+  ///Please update theme as per your need if required...
   ThemeHelper().changeTheme('primary');
   runApp(
     ChangeNotifierProvider(
@@ -24,14 +24,6 @@ void main() {
   );
 }
 
-// void main() {
-//   runApp(
-//     ChangeNotifierProvider(
-//       create: (context) => UserProvider(),
-//       child: MyApp(),
-//     ),
-//   );
-// }
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

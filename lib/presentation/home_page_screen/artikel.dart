@@ -106,21 +106,21 @@ class ArtikelBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final imageUrl = artikel.imgArtikel.isNotEmpty
-        ? Uri.http('172.16.110.41', artikel.imgArtikel).toString()
+        ? Uri.http('172.16.104.49', artikel.imgArtikel).toString()
         : 'assets/images/icon_artikel.png'; // Ganti dengan placeholder image
 
     return GestureDetector(
       onTap: () {
+        print('artikel id from list : ${artikel.judul}');
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                ArtikelPage(artikelId: int.parse(artikel.idArtikel)),
+            builder: (context) => ArtikelPage(artikelId: artikel.idArtikel),
           ),
         );
       },
       child: Container(
-        height: 131,
+        height: 100,
         decoration: BoxDecoration(
           color: Color(0xffC4EFD2),
           borderRadius: BorderRadius.circular(7.0),

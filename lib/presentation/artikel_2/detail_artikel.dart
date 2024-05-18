@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ArtikelPage extends StatelessWidget {
-  final int artikelId;
+  final String artikelId;
 
   const ArtikelPage({
     Key? key,
@@ -15,10 +15,18 @@ class ArtikelPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final apiService = ApiService(); // Instansiasi ApiService
+    final baseUrl = apiService.baseUrl; // Ambil baseUrl dari ApiService
+
     return FutureBuilder<ArtikelDetailModel?>(
-      future: fetchArtikelDetail(), // Mengambil data artikel detail
+      future: fetchArtikelDetail(baseUrl,
+          artikelId), // Mengambil data artikel detail dengan baseUrl dan artikelId
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error.toString()}'));
+        } else if (snapshot.hasData) {
           final artikelDetail = snapshot.data!;
           return Scaffold(
             backgroundColor: Colors.white,
@@ -63,7 +71,7 @@ class ArtikelPage extends StatelessWidget {
                         SizedBox(height: 20),
                         // Menggunakan Image.network untuk mengambil gambar dari jaringan
                         Image.network(
-                          artikelDetail.imgArtikel,
+                          'http://172.16.104.49/${artikelDetail.imgArtikel}',
                           width: double.infinity,
                           height: 200,
                           fit: BoxFit.cover,
@@ -81,20 +89,19 @@ class ArtikelPage extends StatelessWidget {
               ),
             ),
           );
-        } else if (snapshot.hasError) {
-          return Center(child: Text(snapshot.error.toString()));
         } else {
-          return Center(child: CircularProgressIndicator());
+          return Center(child: Text('Artikel tidak ditemukan'));
         }
       },
     );
   }
 
-  Future<ArtikelDetailModel?> fetchArtikelDetail() async {
-    final apiService = ApiService();
+  Future<ArtikelDetailModel?> fetchArtikelDetail(
+      String baseUrl, String artikelId) async {
     try {
-      final response = await http.get(Uri.parse(
-          '${apiService.baseUrl}/artikel_detail.php?id_artikel=$artikelId'));
+      print('artikel id : $artikelId');
+      final response = await http
+          .get(Uri.parse('$baseUrl/artikel_detail.php?id_artikel=$artikelId'));
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
         if (responseData['status'] == 'success') {

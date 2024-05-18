@@ -1,9 +1,11 @@
+import 'package:tolong_s_application1/presentation/login_page_screen/login_page_screen.dart';
 import 'package:tolong_s_application1/presentation/register_page_screen/RegisterOtp1.dart';
 import 'package:tolong_s_application1/widgets/custom_text_form_field.dart';
 import 'package:tolong_s_application1/widgets/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:tolong_s_application1/core/app_export.dart';
 import 'package:tolong_s_application1/theme/ApiService.dart';
+
 
 // ignore_for_file: must_be_immutable
 class RegisterPageScreen extends StatefulWidget {
@@ -33,6 +35,7 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
       TextEditingController();
 
   final ApiService apiService = ApiService();
+
 
   bool isObscure = true;
   FocusNode _nikFocus = FocusNode();
@@ -286,6 +289,7 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
                     imagePath: ImageConstant.imgLogonikregisterpage,
                     height: 21.v,
                     width: 25.h)),
+            allowOnlyNumbers: true,
             prefixConstraints: BoxConstraints(maxHeight: 36.v)));
   }
 
@@ -294,21 +298,21 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
     return Padding(
         padding: EdgeInsets.only(left: 51.h, right: 32.h),
         child: CustomTextFormField(
-            controller: logonamaregisterpagController,
-            prefix: Container(
-                margin: EdgeInsets.fromLTRB(21.h, 6.v, 30.h, 6.v),
-                child: CustomImageView(
-                    imagePath: ImageConstant.imgLogonamaregisterpag,
-                    height: 24.adaptSize,
-                    width: 24.adaptSize)),
-            prefixConstraints: BoxConstraints(maxHeight: 36.v)));
+          controller: logonamaregisterpagController,
+          prefix: Container(
+              margin: EdgeInsets.fromLTRB(21.h, 6.v, 30.h, 6.v),
+              child: CustomImageView(
+                  imagePath: ImageConstant.imgLogonamaregisterpag,
+                  height: 24.adaptSize,
+                  width: 24.adaptSize)),
+          prefixConstraints: BoxConstraints(maxHeight: 36.v),
+          allowOnlyLetters: true,
+        ));
   }
 
   Widget _buildDropdownJenisKelamin(
       BuildContext context, TextEditingController controller) {
-    String dropdownValue = controller.text.isNotEmpty
-        ? controller.text
-        : 'laki-laki'; // Default value, you can change it if needed
+    String? dropdownValue = controller.text.isNotEmpty ? controller.text : null;
 
     return Container(
       margin: EdgeInsets.only(left: 51.h, right: 32.h),
@@ -323,40 +327,63 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
         icon: Icon(Icons.arrow_drop_down),
         iconSize: 30,
         elevation: 16,
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(
+            color: dropdownValue != null
+                ? Colors.black
+                : Colors.black), // Adjusting the hint text color
         onChanged: (String? newValue) {
           // Update state when the dropdown value changes
           setState(() {
-            dropdownValue = newValue!;
-            controller.text = newValue; // Update controller value
+            dropdownValue = newValue;
+            controller.text = newValue ?? ''; // Update controller value
           });
         },
-        items: <String>['laki-laki', 'perempuan']
-            .map<DropdownMenuItem<String>>((String value) {
+        items: <String?>[
+          null,
+          'Laki-Laki',
+          'Perempuan'
+        ] // Adding null as the first item for the hint text
+            .map<DropdownMenuItem<String>>((String? value) {
           return DropdownMenuItem<String>(
             value: value,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment:
-                  CrossAxisAlignment.center, // Align items center left
-              children: [
-                CustomImageView(
-                  // You can replace this with your actual image paths
-                  imagePath: value == 'laki-laki'
-                      ? ImageConstant.imgIconjeniskelaminRegisterpag
-                      : ImageConstant.imgIconjeniskelaminRegisterpag,
-                  height: value == 'laki-laki' ? 25.v : 26.adaptSize,
-                  width: value == 'laki-laki' ? 22.h : 26.adaptSize,
+            child: value != null
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment:
+                        CrossAxisAlignment.center, // Align items center left
+                    children: [
+                      CustomImageView(
+                        // You can replace this with your actual image paths
+                        imagePath: value == 'Laki-Laki'
+                            ? ImageConstant.imgIconjeniskelaminRegisterpag
+                            : ImageConstant.imgIconjeniskelaminRegisterpag,
+                        height: value == 'Laki-Laki' ? 25.v : 26.adaptSize,
+                        width: value == 'Laki-Laki' ? 22.h : 26.adaptSize,
 
-                  margin: EdgeInsets.only(
-                    left: value == 'laki-laki' ? 1.h : 0,
-                    top: value == 'laki-laki' ? 1.v : 0,
+                        margin: EdgeInsets.only(
+                          left: value == 'Laki-Laki' ? 1.h : 0,
+                          top: value == 'Laki-Laki' ? 1.v : 0,
+                        ),
+                      ),
+                      SizedBox(width: 10), // Adjust as needed
+                      Text(value),
+                    ],
+                  )
+                : Row(
+                    children: [
+                      CustomImageView(
+                        imagePath: ImageConstant.imgIconjeniskelaminRegisterpag,
+                        height: 25.v,
+                        width: 22.h,
+                        margin: EdgeInsets.only(right: 10),
+                      ),
+                      Text(
+                        // Displaying hint text
+                        'Pilih Jenis Kelamin',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ],
                   ),
-                ),
-                SizedBox(width: 10), // Adjust as needed
-                Text(value),
-              ],
-            ),
           );
         }).toList(),
       ),
@@ -382,6 +409,7 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
         padding: EdgeInsets.only(left: 51.h, right: 32.h),
         child: CustomTextFormField(
             controller: iconnomorteleponregisterController,
+            allowOnlyNumbers: true,
             prefix: Container(
                 margin: EdgeInsets.fromLTRB(21.h, 6.v, 30.h, 6.v),
                 child: CustomImageView(
@@ -394,93 +422,69 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
   /// Section Widget
 
   /// Section Widget
+// Variabel untuk menyimpan status isObscure untuk setiap field
+  bool isObscureKatasandi = true;
+  bool isObscureKonfirmKatasandi = true;
+
   Widget _buildIconkatasandiregisterpag(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.only(left: 51.h, right: 32.h),
-        child: CustomTextFormField(
-            controller: iconkonfirmkatasandiregisterpagController,
-            textInputAction: TextInputAction.done,
-            prefix: Container(
-                margin: EdgeInsets.fromLTRB(19.h, 6.v, 30.h, 6.v),
-                child: CustomImageView(
-                    imagePath: ImageConstant.imgIconkatasandiregisterpag,
-                    height: 24.adaptSize,
-                    width: 24.adaptSize)),
-            prefixConstraints: BoxConstraints(maxHeight: 36.v)));
+      padding: EdgeInsets.only(left: 51.h, right: 32.h),
+      child: CustomTextFormField(
+        controller: iconkatasandiregisterpagController,
+        textInputAction: TextInputAction.done,
+        prefix: Container(
+          margin: EdgeInsets.fromLTRB(19.h, 6.v, 30.h, 6.v),
+          child: CustomImageView(
+            imagePath: ImageConstant.imgIconkatasandiregisterpag,
+            height: 24.adaptSize,
+            width: 24.adaptSize,
+          ),
+        ),
+        suffix: IconButton(
+          icon: Icon(
+              isObscureKatasandi ? Icons.visibility : Icons.visibility_off),
+          onPressed: () {
+            setState(() {
+              isObscureKatasandi = !isObscureKatasandi;
+            });
+          },
+          color: Colors.white,
+        ),
+        obscureText: isObscureKatasandi,
+        prefixConstraints: BoxConstraints(maxHeight: 36.v),
+      ),
+    );
   }
 
   Widget _buildIconkonfirmkatasandiregisterpag(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.only(left: 51.h, right: 32.h),
-        child: CustomTextFormField(
-            controller: iconkatasandiregisterpagController,
-            textInputAction: TextInputAction.done,
-            prefix: Container(
-                margin: EdgeInsets.fromLTRB(19.h, 6.v, 30.h, 6.v),
-                child: CustomImageView(
-                    imagePath: ImageConstant.imgIconkatasandiregisterpag,
-                    height: 24.adaptSize,
-                    width: 24.adaptSize)),
-            prefixConstraints: BoxConstraints(maxHeight: 36.v)));
-  }
-
-  /// Section Widget
-  Widget _buildDaftar(BuildContext context) {
-    return CustomElevatedButton(
-        text: "Daftar",
-        margin: EdgeInsets.only(left: 45.h, right: 44.h, bottom: 53.v),
-        onPressed: () {
-          if (logonikregisterpageController.text.isEmpty ||
-              logonamaregisterpagController.text.isEmpty ||
-              _jenisKelaminController.text.isEmpty ||
-              selectedDate.toString().isEmpty ||
-              iconnemailregisterController.text.isEmpty ||
-              iconnomorteleponregisterController.text.isEmpty ||
-              iconkatasandiregisterpagController.text.isEmpty ||
-              iconkonfirmkatasandiregisterpagController.text.isEmpty) {
-            alert(context, "Isi semua data terlebih dahulu", "Gagal mendaftar!",
-                Icons.error, Colors.red);
-          } else if (iconkatasandiregisterpagController.text !=
-              iconkonfirmkatasandiregisterpagController.text) {
-            alert(context, "Sandi dan konfirmasi sandi tidak sesuai",
-                "Gagal mendaftar!", Icons.error, Colors.red);
-          } else if (iconkatasandiregisterpagController.text.length < 8 ||
-              iconkonfirmkatasandiregisterpagController.text.length < 8) {
-            alert(context, "Panjang sandi minimal 8 karakter",
-                "Gagal mendaftar!", Icons.error, Colors.red);
-          } else {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => RegisterOtp(
-                  // email: emailController.text,
-                  // nama: NamaController.text,
-                  // noTelp: telpController.text,
-                  // password: passwordController.text,
-                  // username: usernameController.text,
-
-                  nik: logonikregisterpageController.text,
-                  nama: logonamaregisterpagController.text,
-                  jenis_kelamin: _jenisKelaminController.text,
-                  tanggal_lahir: selectedDate.toString(),
-                  email: iconnemailregisterController.text,
-                  no_telepon: iconnomorteleponregisterController.text,
-                  kata_sandi: iconkatasandiregisterpagController.text,
-                ),
-              ),
-            );
-          }
-        });
-  }
-
-  /// Navigates to the loginPageScreen when the action is triggered.
-  navigateTo(BuildContext context) {
-    Navigator.pushNamed(context, AppRoutes.loginPageScreen);
-  }
-
-  /// Navigates to the loginPageScreen when the action is triggered.
-  onTapDaftar(BuildContext context) {
-    Navigator.pushNamed(context, AppRoutes.loginPageScreen);
+      padding: EdgeInsets.only(left: 51.h, right: 32.h),
+      child: CustomTextFormField(
+        controller: iconkonfirmkatasandiregisterpagController,
+        textInputAction: TextInputAction.done,
+        prefix: Container(
+          margin: EdgeInsets.fromLTRB(19.h, 6.v, 30.h, 6.v),
+          child: CustomImageView(
+            imagePath: ImageConstant.imgIconkatasandiregisterpag,
+            height: 24.adaptSize,
+            width: 24.adaptSize,
+          ),
+        ),
+        suffix: IconButton(
+          icon: Icon(isObscureKonfirmKatasandi
+              ? Icons.visibility
+              : Icons.visibility_off),
+          onPressed: () {
+            setState(() {
+              isObscureKonfirmKatasandi = !isObscureKonfirmKatasandi;
+            });
+          },
+          color: Colors.white,
+        ),
+        obscureText: isObscureKonfirmKatasandi,
+        prefixConstraints: BoxConstraints(maxHeight: 36.v),
+      ),
+    );
   }
 
   void _register() async {
@@ -518,21 +522,7 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => RegisterOtp(
-                //             String nik = logonikregisterpageController.text;
-                // String nama = logonamaregisterpagController.text;
-                // String jenis_kelamin = _jenisKelaminController.text;
-                // String tanggal_lahir = selectedDate.toString();
-                // String no_telepon = iconnomorteleponregisterController.text;
-                // String kata_sandi = iconkatasandiregisterpagController.text;
-                nik: logonikregisterpageController.text,
-                nama: logonamaregisterpagController.text,
-                jenis_kelamin: _jenisKelaminController.text,
-                tanggal_lahir: selectedDate.toString(),
-                email: iconnemailregisterController.text,
-                no_telepon: iconnomorteleponregisterController.text,
-                kata_sandi: iconkatasandiregisterpagController.text,
-              ),
+              builder: (context) => LoginPageScreen(),
             ),
           );
           alert(context, "Silahkan Masuk", "Berhasil Mendaftar!", Icons.check,
@@ -550,6 +540,119 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
           "gagal mendaftar!", Icons.error, Colors.red);
     }
   }
+
+  /// Section Widget
+  Widget _buildDaftar(BuildContext context) {
+    return CustomElevatedButton(
+        text: "Daftar",
+        margin: EdgeInsets.only(left: 45.h, right: 44.h, bottom: 53.v),
+        onPressed: () async {
+          RegExp regex = RegExp(r'^(?=.*[A-Z])(?=.*\d).+$');
+
+          if (logonikregisterpageController.text.isEmpty ||
+              logonamaregisterpagController.text.isEmpty ||
+              _jenisKelaminController.text.isEmpty ||
+              selectedDate.toString().isEmpty ||
+              iconnemailregisterController.text.isEmpty ||
+              iconnomorteleponregisterController.text.isEmpty ||
+              iconkatasandiregisterpagController.text.isEmpty ||
+              iconkonfirmkatasandiregisterpagController.text.isEmpty) {
+            alert(context, "Isi semua data terlebih dahulu", "Gagal!",
+                Icons.error, Colors.red);
+          } else if (logonikregisterpageController.text.length != 16) {
+            alert(context, "NIK harus terdiri dari 16 karakter", "Gagal!",
+                Icons.error, Colors.red);
+          } else if (!_isValidEmail(iconnemailregisterController.text)) {
+            alert(context, "Format Email tidak valid", "Gagal!", Icons.error,
+                Colors.red);
+          } else if (iconkatasandiregisterpagController.text !=
+              iconkonfirmkatasandiregisterpagController.text) {
+            alert(context, "Sandi dan konfirmasi sandi tidak sesuai", "Gagal!",
+                Icons.error, Colors.red);
+          } else if (iconnomorteleponregisterController.text.length < 11 ||
+              iconnomorteleponregisterController.text.length > 13) {
+            alert(
+                context,
+                "Nomor telepon harus terdiri dari 11 hingga 13 digit",
+                "Gagal!",
+                Icons.error,
+                Colors.red);
+          } else if (iconkatasandiregisterpagController.text.length < 8 ||
+              iconkonfirmkatasandiregisterpagController.text.length < 8 ||
+              !regex.hasMatch(iconkatasandiregisterpagController.text) ||
+              !regex.hasMatch(iconkonfirmkatasandiregisterpagController.text)) {
+            alert(
+                context,
+                "Password harus memiliki 8 karakter, termasuk satu huruf besar dan satu angka.",
+                "Gagal!",
+                Icons.error,
+                Colors.red);
+          } else {
+            try {
+              Map<String, dynamic> responseData = await apiService.beforenext2(
+                  iconnemailregisterController.text,
+                  logonikregisterpageController.text);
+              if (responseData['status'] == 'error') {
+                // Menampilkan pesan kesalahan yang sesuai dengan respons dari backend
+                String errorMessage = responseData['message'];
+                if (errorMessage == 'Email sudah terdaftar') {
+                  // Menampilkan alert jika email sudah terdaftar
+                  alert(context, "Email sudah terdaftar.", "Gagal!",
+                      Icons.error, Colors.red);
+                } else if (errorMessage == 'NIK sudah terdaftar') {
+                  // Menampilkan alert jika NIK sudah terdaftar
+                  alert(context, "NIK sudah terdaftar.", "Gagal!", Icons.error,
+                      Colors.red);
+                } else {
+                  // Menampilkan pesan kesalahan umum
+                  alert(
+                      context, errorMessage, "Gagal!", Icons.error, Colors.red);
+                }
+              } else {
+
+                // Email is not found, proceed to OTP page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RegisterOtp(
+                      nik: logonikregisterpageController.text,
+                      nama: logonamaregisterpagController.text,
+                      jenis_kelamin: _jenisKelaminController.text,
+                      tanggal_lahir: selectedDate.toString(),
+                      email: iconnemailregisterController.text,
+                      no_telepon: iconnomorteleponregisterController.text,
+                      kata_sandi: iconkatasandiregisterpagController.text,
+                    ),
+                  ),
+                );
+                
+              }
+            } catch (e) {
+              // Handle errors
+              print("Error: $e");
+              alert(context, "Terjadi kesalahan saat memeriksa email", "Gagal!",
+                  Icons.error, Colors.red);
+            }
+          }
+        });
+  }
+}
+
+/// Navigates to the loginPageScreen when the action is triggered.
+navigateTo(BuildContext context) {
+  Navigator.pushNamed(context, AppRoutes.loginPageScreen);
+}
+
+/// Navigates to the loginPageScreen when the action is triggered.
+onTapDaftar(BuildContext context) {
+  Navigator.pushNamed(context, AppRoutes.loginPageScreen);
+}
+
+bool _isValidEmail(String email) {
+  // Menggunakan regular expression untuk memeriksa format email
+  // Ini adalah contoh regular expression yang sederhana, Anda dapat menyesuaikan sesuai kebutuhan Anda
+  final RegExp emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+  return emailRegex.hasMatch(email);
 }
 
 void alert(BuildContext context, String message, String title, IconData icon,
@@ -620,7 +723,7 @@ Widget contentBox(BuildContext context, String message, String title,
                 },
                 child: Text(
                   'OKE',
-                  style: TextStyle(color: Color.fromRGBO(203, 164, 102, 1)),
+                  style: TextStyle(color: Color(0xFF49A18C)),
                 ),
               ),
             ),

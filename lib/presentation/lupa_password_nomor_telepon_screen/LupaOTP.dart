@@ -111,7 +111,7 @@ class _LupaOtpState extends State<LupaOtp> {
                       child: ElevatedButton(
                         onPressed: () async {
                           myauth.setConfig(
-                              appEmail: "michaelrevaldo5@gmail.com",
+                              appEmail: "chaoscode814@gmail.com",
                               appName: "PUSLINE",
                               userEmail: widget.email,
                               otpLength: 6,
@@ -119,12 +119,12 @@ class _LupaOtpState extends State<LupaOtp> {
                           if (await myauth.sendOTP() == true) {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(const SnackBar(
-                              content: Text("OTP has been sent"),
+                              content: Text("OTP telah terkirim"),
                             ));
                           } else {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(const SnackBar(
-                              content: Text("Oops, OTP send failed"),
+                              content: Text("Ups, pengiriman OTP gagal"),
                             ));
                           }
                         },
@@ -142,11 +142,7 @@ class _LupaOtpState extends State<LupaOtp> {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: "Tidak Menerima Kode? ",
-                                  style: CustomTextStyles.titleSmallffffffff,
-                                ),
-                                TextSpan(
-                                  text: "Kirim Ulang",
+                                  text: "Kirim Kode OTP",
                                   style: CustomTextStyles.titleSmallffefaf00,
                                 ),
                               ],
@@ -175,7 +171,7 @@ class _LupaOtpState extends State<LupaOtp> {
                         } else {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(
-                            content: Text("Invalid OTP"),
+                            content: Text("OTP Tidak Valid"),
                           ));
                         }
                       },
@@ -296,7 +292,7 @@ class _LupaOtpState extends State<LupaOtp> {
                   },
                   child: Text(
                     'OKE',
-                    style: TextStyle(color: Color.fromRGBO(203, 164, 102, 1)),
+                    style: TextStyle(color: Color(0xFF49A18C)),
                   ),
                 ),
               ),

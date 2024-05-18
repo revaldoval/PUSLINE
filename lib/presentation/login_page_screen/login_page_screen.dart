@@ -66,7 +66,7 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
           ),
         );
       } else if (response['status'] == 'errorValid') {
-        alert(context, "username atau sandi tidak valid");
+        alert(context, "NIK atau sandi tidak valid");
       } else {
         print('Login failed: ${response['message']}');
 
@@ -121,7 +121,7 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
-                'Gagal Login!',
+                'Gagal Masuk!',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -144,7 +144,7 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
                   },
                   child: Text(
                     'OKE',
-                    style: TextStyle(color: Color.fromRGBO(203, 164, 102, 1)),
+                    style: TextStyle(color: Color(0xFF49A18C)),
                   ),
                 ),
               ),
@@ -168,73 +168,6 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
       ],
     );
   }
-  // Future<void> _login() async {
-  //   setState(() {
-  //     _isLoading = true;
-  //   });
-
-  //   final String nik = logonikloginpageController.text;
-  //   final String kata_sandi = logokatasandiloginpageController.text;
-
-  //   final String apiUrl = ApiService.url('login.php').toString(); // Ganti dengan URL login.php Anda
-
-  //   try {
-  //     final response = await http.post(
-  //       Uri.parse(apiUrl),
-  //       body: jsonEncode({
-  //         'nik': nik,
-  //         'kata_sandi': kata_sandi,
-  //       }),
-  //       headers: <String, String>{
-  //         'Content-Type': 'application/json; charset=UTF-8',
-  //       },
-  //     );
-
-  //     if (response.statusCode == 200) {
-  //       final data = jsonDecode(response.body);
-  //       if (data['status'] == 'success') {
-  //         // Login berhasil, lakukan navigasi ke halaman berikutnya
-  //         Navigator.push(context,
-  //             MaterialPageRoute(builder: (context) => HomePageScreen()));
-  //       } else {
-  //         // Login gagal, tampilkan pesan kesalahan
-  //         showDialog(
-  //           context: context,
-  //           builder: (context) => AlertDialog(
-  //             title: Text('Login Gagal'),
-  //             content: Text(data['message']),
-  //             actions: [
-  //               TextButton(
-  //                 onPressed: () => Navigator.pop(context),
-  //                 child: Text('OK'),
-  //               ),
-  //             ],
-  //           ),
-  //         );
-  //       }
-  //     } else {
-  //       throw Exception('Gagal melakukan request ke server');
-  //     }
-  //   } catch (error) {
-  //     showDialog(
-  //       context: context,
-  //       builder: (context) => AlertDialog(
-  //         title: Text('Error'),
-  //         content: Text('Terjadi kesalahan: $error'),
-  //         actions: [
-  //           TextButton(
-  //             onPressed: () => Navigator.pop(context),
-  //             child: Text('OK'),
-  //           ),
-  //         ],
-  //       ),
-  //     );
-  //   } finally {
-  //     setState(() {
-  //       _isLoading = false;
-  //     });
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -264,6 +197,7 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
                   Padding(
                       padding: EdgeInsets.only(left: 45.h, right: 44.h),
                       child: CustomTextFormField(
+                          // allowOnlyNumbers: true,
                           controller: logonikloginpageController,
                           prefix: Container(
                               margin: EdgeInsets.fromLTRB(17.h, 9.v, 30.h, 9.v),
@@ -271,6 +205,7 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
                                   imagePath: ImageConstant.imgLogonikloginpage,
                                   height: 24.adaptSize,
                                   width: 24.adaptSize)),
+                          allowOnlyNumbers: true,
                           prefixConstraints: BoxConstraints(maxHeight: 42.v),
                           borderDecoration:
                               TextFormFieldStyleHelper.outlineOnPrimaryTL21)),
@@ -293,12 +228,24 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
                                   style: theme.textTheme.labelLarge)))),
                   SizedBox(height: 12.v),
                   CustomElevatedButton(
-                    text: "MASUK",
-                    margin: EdgeInsets.only(left: 45.h, right: 44.h),
-                    onPressed: () {
-                      _login(context);
-                    },
-                  ),
+                      text: "MASUK",
+                      margin: EdgeInsets.only(left: 45.h, right: 44.h),
+                      onPressed: () {
+                        if (logonikloginpageController.text.isEmpty ||
+                            logokatasandiloginpageController.text.isEmpty) {
+                          alert(context, "Isi semua data terlebih dahulu");
+                        } else if (logonikloginpageController.text.length !=
+                            16) {
+                          alert(context, "NIK harus terdiri dari 16 karakter");
+                        } else {
+                          _login(context);
+                        }
+                      }
+
+                      // onPressed: () {
+                      //   _login(context);
+                      // },
+                      ),
                   SizedBox(height: 18.v),
                   GestureDetector(
                       onTap: () {
@@ -340,28 +287,42 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
   }
 
   /// Section Widget
+  bool isObscureKatasandi = true;
   Widget _buildSignUp(BuildContext context) {
     return Container(
-        margin: EdgeInsets.symmetric(horizontal: 44.h),
-        decoration: AppDecoration.outlineBlack,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Padding(
-              padding: EdgeInsets.only(left: 43.h),
-              child: Text("Kata Sandi", style: theme.textTheme.titleSmall)),
-          SizedBox(height: 1.v),
-          CustomTextFormField(
-              controller: logokatasandiloginpageController,
-              textInputAction: TextInputAction.done,
-              prefix: Container(
-                  margin: EdgeInsets.fromLTRB(17.h, 9.v, 30.h, 9.v),
-                  child: CustomImageView(
-                      imagePath: ImageConstant.imgLogokatasandiloginpage,
-                      height: 24.adaptSize,
-                      width: 24.adaptSize)),
-              prefixConstraints: BoxConstraints(maxHeight: 42.v),
-              obscureText: true,
-              borderDecoration: TextFormFieldStyleHelper.outlineOnPrimaryTL21)
-        ]));
+      margin: EdgeInsets.symmetric(horizontal: 44.h),
+      decoration: AppDecoration.outlineBlack,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Padding(
+            padding: EdgeInsets.only(left: 43.h),
+            child: Text("Kata Sandi", style: theme.textTheme.titleSmall)),
+        SizedBox(height: 1.v),
+        CustomTextFormField(
+            controller: logokatasandiloginpageController,
+            textInputAction: TextInputAction.done,
+            prefix: Container(
+                margin: EdgeInsets.fromLTRB(17.h, 9.v, 30.h, 9.v),
+                child: CustomImageView(
+                    imagePath: ImageConstant.imgLogokatasandiloginpage,
+                    height: 24.adaptSize,
+                    width: 24.adaptSize)),
+            suffix: IconButton(
+              icon: Icon(
+                  isObscureKatasandi ? Icons.visibility : Icons.visibility_off),
+              onPressed: () {
+                setState(() {
+                  isObscureKatasandi = !isObscureKatasandi;
+                });
+              },
+              color: Colors.white,
+            ),
+            obscureText: isObscureKatasandi,
+            prefixConstraints: BoxConstraints(maxHeight: 36.v),
+            // prefixConstraints: BoxConstraints(maxHeight: 42.v),
+            // obscureText: true,
+            borderDecoration: TextFormFieldStyleHelper.outlineOnPrimaryTL21)
+      ]),
+    );
   }
 
   /// Navigates to the lupaPasswordNomorTeleponScreen when the action is triggered.

@@ -130,12 +130,12 @@ class _RegisterOtpState extends State<RegisterOtp> {
                           if (await myauth.sendOTP() == true) {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(const SnackBar(
-                              content: Text("OTP has been sent"),
+                              content: Text("OTP telah terkirim"),
                             ));
                           } else {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(const SnackBar(
-                              content: Text("Oops, OTP send failed"),
+                              content: Text("Ups, pengiriman OTP gagal"),
                             ));
                           }
                         },
@@ -153,11 +153,7 @@ class _RegisterOtpState extends State<RegisterOtp> {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: "Tidak Menerima Kode? ",
-                                  style: CustomTextStyles.titleSmallffffffff,
-                                ),
-                                TextSpan(
-                                  text: "Kirim Ulang",
+                                  text: "Kirim Kode OTP",
                                   style: CustomTextStyles.titleSmallffefaf00,
                                 ),
                               ],
@@ -174,7 +170,7 @@ class _RegisterOtpState extends State<RegisterOtp> {
                             true) {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(
-                            content: Text("OTP is verified"),
+                            content: Text("OTP berhasil diverifikasi"),
                           ));
                           // alert(context, "Silahkan Masuk", "Berhasil Mendaftar!",
                           //     Icons.check, Colors.green);
@@ -189,7 +185,7 @@ class _RegisterOtpState extends State<RegisterOtp> {
                         } else {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(
-                            content: Text("Invalid OTP"),
+                            content: Text("OTP Tidak Valid"),
                           ));
                         }
                       },
@@ -246,13 +242,14 @@ class _RegisterOtpState extends State<RegisterOtp> {
     // Validasi form, misalnya memastikan semua field terisi dengan benar
     try {
       Map<String, dynamic> response = await apiService.register(
-          widget.nik,
-          widget.nama,
-          widget.jenis_kelamin,
-          widget.tanggal_lahir,
-          widget.email,
-          widget.no_telepon,
-          widget.kata_sandi);
+        widget.nik,
+        widget.nama,
+        widget.jenis_kelamin,
+        widget.tanggal_lahir,
+        widget.email,
+        widget.no_telepon,
+        widget.kata_sandi,
+      );
 
       if (response['status'] == 'success') {
         print('Registration successful');
@@ -264,31 +261,19 @@ class _RegisterOtpState extends State<RegisterOtp> {
           ),
         );
 
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => RegisterOtp(),
-        //   ),
-        // );
-
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => RegisterOtp(
-        //       email: emailController.text,
-        //       nama: NamaController.text,
-        //       noTelp: telpController.text,
-        //       password: passwordController.text,
-        //       username: usernameController.text,
-        //     ),
-        //   ),
-        // );
-
         alert(context, "Silahkan Masuk", "Berhasil Mendaftar!", Icons.check,
             Colors.green);
-      } else {
-        print('Registration failed: ${response['message']}');
-        // Tambahkan logika penanganan jika registrasi gagal
+      } else if (response['status'] == 'error') {
+        if (response['message'] == 'Email already exists') {
+          alert(context, "Harap memasukkan kembali Email yang belum terdaftar.",
+              "Email sudah terdaftar!", Icons.error, Colors.red);
+        } else if (response['message'] == 'NIK already exists') {
+          alert(context, "Harap memasukkan kembali NIK yang belum terdaftar.",
+              "NIK sudah terdaftar!", Icons.error, Colors.red);
+        } else {
+          print('Registration failed: ${response['message']}');
+          // Tambahkan logika penanganan jika registrasi gagal karena alasan lain
+        }
       }
     } catch (e) {
       print('Error during registration: $e');

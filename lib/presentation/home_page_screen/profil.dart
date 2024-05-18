@@ -1,8 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:tolong_s_application1/presentation/models/user_model_baru.dart';
 import 'package:tolong_s_application1/presentation/ubah_profil/ubahprofil.dart';
 import 'package:tolong_s_application1/theme/custom_text_style.dart';
-import 'package:get/get.dart';
 
 class Profil extends StatefulWidget {
   const Profil({Key? key}) : super(key: key);
@@ -12,71 +13,91 @@ class Profil extends StatefulWidget {
 }
 
 class _ProfilState extends State<Profil> {
+  late UserModelBaru _user = UserModelBaru(
+    nik: '',
+    nama: '',
+    tanggal_lahir: '',
+    jenis_kelamin: '',
+    no_telepon: '',
+    email: '',
+    img_profil: '',
+    kode_otp: '',
+    created_at: '',
+    updated_at: '',
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    try {
+      final response = await http.get(Uri.parse(
+          'http://192.168.0.104/flutter/profil_read.php?nik=1234567890123456'));
+
+      print('STATUS CODE : ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        setState(() {
+          _user = UserModelBaru.fromJson(responseData['data']);
+        });
+
+        print(responseData['data']);
+      } else {
+        setState(() {});
+        throw Exception('Failed to load user data: ${response.statusCode}');
+      }
+    } catch (error) {
+      print(error);
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: Colors.white,
-        body: Stack(
-          children: [
-            Center(
-              child: Container(
-                width: 180,
-                height: 187,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("assets/images/logokemenkes.png"),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-
-            Padding(
-              padding: EdgeInsets.only(top: 37, bottom: 662),
-              child: Center(
-                child: Container(
-                  width: MediaQuery.of(context).size.width - 16,
-                  decoration: BoxDecoration(
-                    color: Color(0xff15AFA7),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 90, // 90 dari atas layar
-              left: (MediaQuery.of(context).size.width - 87) /
-                  2, // Pusat secara horizontal
-              child: ClipOval(
-                child: Container(
-                  width: 87,
-                  height: 87,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.white, // Warna border putih
-                      width: 3, // Ketebalan border 5
-                    ),
-                  ),
-                  child: ClipOval(
-                    child: Image.asset(
-                      'assets/images/renaldi.jpeg', // Ganti dengan path foto Anda
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            // Mengubah widget Text menjadi Column
-            Positioned(
-              top: 200,
-              left: 0,
-              right: 0,
+        body: SingleChildScrollView(
+          padding: EdgeInsets.only(bottom: 100), // Added margin bottom here
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  SizedBox(
+                      height: 70), // Added margin top for the profile photo
+                  ClipOval(
+                    child: Container(
+                      width: 87,
+                      height: 87,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 3,
+                        ),
+                      ),
+                      child: ClipOval(
+                        child: _user.img_profil.isNotEmpty
+                            ? Image.network(
+                                'http://172.16.104.49/flutter/foto_profil/${_user.img_profil}',
+                                fit: BoxFit.cover,
+                              )
+                            : Image.asset(
+                                'assets/images/placeholder.png',
+                                fit: BoxFit.cover,
+                              ), // Placeholder image
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 23),
                   Text(
                     'Nama Lengkap',
                     style: TextStyle(
@@ -84,7 +105,7 @@ class _ProfilState extends State<Profil> {
                       color: Colors.black,
                     ),
                   ),
-                  SizedBox(height: 7), // Jarak antara teks dan kotak
+                  SizedBox(height: 7),
                   Container(
                     width: 450,
                     height: 50,
@@ -98,7 +119,7 @@ class _ProfilState extends State<Profil> {
                     ),
                     child: Center(
                       child: Text(
-                        'Renaldii Diii',
+                        _user.nama,
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.black,
@@ -107,9 +128,7 @@ class _ProfilState extends State<Profil> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 23,
-                  ),
+                  SizedBox(height: 23),
                   Text(
                     'NIK',
                     style: TextStyle(
@@ -117,7 +136,7 @@ class _ProfilState extends State<Profil> {
                       color: Colors.black,
                     ),
                   ),
-                  SizedBox(height: 7), // Jarak antara teks dan kotak
+                  SizedBox(height: 7),
                   Container(
                     width: 450,
                     height: 50,
@@ -131,7 +150,7 @@ class _ProfilState extends State<Profil> {
                     ),
                     child: Center(
                       child: Text(
-                        '3321110902070002',
+                        _user.nik,
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.black,
@@ -140,9 +159,7 @@ class _ProfilState extends State<Profil> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 23,
-                  ),
+                  SizedBox(height: 23),
                   Text(
                     'Tanggal Lahir',
                     style: TextStyle(
@@ -150,7 +167,7 @@ class _ProfilState extends State<Profil> {
                       color: Colors.black,
                     ),
                   ),
-                  SizedBox(height: 7), // Jarak antara teks dan kotak
+                  SizedBox(height: 7),
                   Container(
                     width: 450,
                     height: 50,
@@ -164,7 +181,7 @@ class _ProfilState extends State<Profil> {
                     ),
                     child: Center(
                       child: Text(
-                        '17 Agustus 1945',
+                        _user?.tanggal_lahir ?? '',
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.black,
@@ -173,9 +190,7 @@ class _ProfilState extends State<Profil> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 23,
-                  ),
+                  SizedBox(height: 23),
                   Text(
                     'Jenis Kelamin',
                     style: TextStyle(
@@ -183,7 +198,7 @@ class _ProfilState extends State<Profil> {
                       color: Colors.black,
                     ),
                   ),
-                  SizedBox(height: 7), // Jarak antara teks dan kotak
+                  SizedBox(height: 7),
                   Container(
                     width: 450,
                     height: 50,
@@ -197,7 +212,7 @@ class _ProfilState extends State<Profil> {
                     ),
                     child: Center(
                       child: Text(
-                        'Laki - Laki',
+                        _user?.jenis_kelamin ?? '',
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.black,
@@ -206,17 +221,15 @@ class _ProfilState extends State<Profil> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 23,
-                  ),
+                  SizedBox(height: 23),
                   Text(
-                    'Nomor Telepon',
+                    'Email',
                     style: TextStyle(
                       fontSize: 13,
                       color: Colors.black,
                     ),
                   ),
-                  SizedBox(height: 7), // Jarak antara teks dan kotak
+                  SizedBox(height: 7),
                   Container(
                     width: 450,
                     height: 50,
@@ -230,7 +243,7 @@ class _ProfilState extends State<Profil> {
                     ),
                     child: Center(
                       child: Text(
-                        '081348526548',
+                        _user.email,
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.black,
@@ -239,37 +252,35 @@ class _ProfilState extends State<Profil> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 28,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                    ),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Get.to(UbahProfil());
-                        // Action ketika tombol ditekan
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        minimumSize: Size(400, 60),
-                        backgroundColor: Color(0xFF15AFA7),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
+                  SizedBox(height: 58),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => UbahProfil(),
                         ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      minimumSize: Size(MediaQuery.of(context).size.width - 32,
+                          60), // Updated minimumSize value
+                      backgroundColor: Color(0xFF15AFA7),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
                       ),
-                      child: Text(
-                        'Ubah Profil',
-                        style: CustomTextStyles.poppins13
-                            .copyWith(color: Colors.white),
-                      ),
+                    ),
+                    child: Text(
+                      'Ubah Profil',
+                      style: CustomTextStyles.poppins13
+                          .copyWith(color: Colors.white),
                     ),
                   ),
                 ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
