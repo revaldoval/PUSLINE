@@ -36,6 +36,8 @@ class CustomTextStyles {
       fontSize: 16.fSize, fontWeight: FontWeight.w500, color: Colors.green);
   static get notifikasiditolak => theme.textTheme.titleMedium!.copyWith(
       fontSize: 16.fSize, fontWeight: FontWeight.w500, color: Colors.red);
+        static get notifikasidiproses => theme.textTheme.titleMedium!.copyWith(
+      fontSize: 16.fSize, fontWeight: FontWeight.w500, color: Colors.amber);
 
   static get poppin15 => theme.textTheme.titleMedium!.copyWith(
         fontSize: 16.fSize,

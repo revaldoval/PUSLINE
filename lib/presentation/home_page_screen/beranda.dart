@@ -93,11 +93,10 @@ class _BerandaState extends State<Beranda> {
                                       width: 2,
                                     ),
                                   ),
-                                  child: user != null &&
-                                          user!.img_profil != null
+                                  child: user != null && user.img_profil != null
                                       ? ClipOval(
                                           child: Image.network(
-                                            apiService.fotoProfilUrl +
+                                            apiService.imageUrl +
                                                 user!.img_profil!,
                                             width: 45,
                                             height: 45,
@@ -128,7 +127,8 @@ class _BerandaState extends State<Beranda> {
                                 FittedBox(
                                   fit: BoxFit.contain,
                                   child: Text(
-                                    "Selamat Datang! " +
+                                    // '$greeting '
+                                    'Selamat Datang! ' +
                                         (user!.nama.toString().length > 10
                                             ? user!.nama
                                                     .toString()

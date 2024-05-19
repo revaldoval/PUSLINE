@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 
 class ApiService {
   final String baseUrl = "http://192.168.0.104:8080/projek";
-  final String fotoProfilUrl = "http://192.168.0.104/projek/images/profil/";
+  final String imageUrl = "http://192.168.0.104:8080/projek/images/profil/";
 
   Future<Map<String, dynamic>> register(
       String nik,

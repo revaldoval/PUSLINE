@@ -9,6 +9,7 @@ import '../models/notifikasi_model.dart'; // Ubah import sesuai dengan nama file
 import '../models/user_model_baru.dart';
 import '../models/user_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 
 class Notifikasi extends StatefulWidget {
   const Notifikasi({Key? key}) : super(key: key);
@@ -103,6 +104,91 @@ class _NotifikasiState extends State<Notifikasi> {
   }
 }
 
+// class NotifBox extends StatelessWidget {
+//   final NotifikasiListModel notifikasi;
+//   final ApiService apiService; // Add ApiService field
+
+//   const NotifBox({Key? key, required this.notifikasi, required this.apiService})
+//       : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     Color backgroundColor;
+//     Icon icon;
+//     switch (notifikasi.status_pendaftaran) {
+//       case 'Ditolak':
+//         backgroundColor = Colors.red.withOpacity(0.1);
+//         icon = Icon(Icons.error_outline, color: Colors.red, size: 40);
+//         break;
+//       case 'Diterima':
+//         backgroundColor = Colors.green.withOpacity(0.1);
+//         icon = Icon(Icons.check_circle_outline, color: Colors.green, size: 40);
+//         break;
+//       case 'Diproses':
+//         backgroundColor = Colors.amber.withOpacity(0.1);
+//         icon = Icon(Icons.watch_later_outlined, color: Colors.amber, size: 40);
+//         break;
+//       default:
+//         backgroundColor = Colors.grey.withOpacity(0.1);
+//         icon = Icon(Icons.notifications, color: Colors.grey, size: 40);
+//     }
+
+//     return GestureDetector(
+//       onTap: () {
+//         print('id_pendaftaran : ${notifikasi.id_pendaftaran}');
+//         Get.to(
+//             () => DetailNotifikasi(id_pendaftaran: notifikasi.id_pendaftaran));
+//       },
+//       child: Container(
+//         margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+//         padding: EdgeInsets.all(12),
+//         decoration: BoxDecoration(
+//           color: Colors.white, // Set background color to white
+//           borderRadius: BorderRadius.circular(10),
+//           boxShadow: [
+//             BoxShadow(
+//               color: Colors.grey.withOpacity(0.5),
+//               spreadRadius: 2,
+//               blurRadius: 5,
+//               offset: Offset(0, 3), // changes position of shadow
+//             ),
+//           ],
+//         ),
+//         child: Row(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             icon,
+//             SizedBox(width: 16),
+//             Expanded(
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Text(
+//                     notifikasi.status_pendaftaran,
+//                     style: TextStyle(
+//                       fontWeight: FontWeight.bold,
+//                       fontSize: 16,
+//                     ),
+//                   ),
+//                   SizedBox(height: 8),
+//                   Text(
+//                     'Tanggal Pendaftaran: ${notifikasi.tanggal_pendaftaran}',
+//                     style: TextStyle(fontSize: 14, color: Colors.grey),
+//                   ),
+//                   SizedBox(height: 8),
+//                   Text(
+//                     'Jenis Poli: ${notifikasi.jenis_poli}',
+//                     style: TextStyle(fontSize: 14, color: Colors.grey),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 class NotifBox extends StatelessWidget {
   final NotifikasiListModel notifikasi;
   final ApiService apiService; // Add ApiService field
@@ -112,88 +198,80 @@ class NotifBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String imagePath = ''; // Default image path
-
-    // Set image path based on status_pendaftaran
+    Color backgroundColor;
+    Icon icon;
     switch (notifikasi.status_pendaftaran) {
       case 'Ditolak':
-        imagePath = 'assets/images/notifditolak.png';
+        backgroundColor = Colors.red.withOpacity(0.1);
+        icon = Icon(Icons.error_outline, color: Colors.red, size: 40);
         break;
       case 'Diterima':
-        imagePath = 'assets/images/notifselesai.png';
+        backgroundColor = Colors.green.withOpacity(0.1);
+        icon = Icon(Icons.check_circle_outline, color: Colors.green, size: 40);
         break;
       case 'Diproses':
-        imagePath = 'assets/images/notifproses.png';
+        backgroundColor = Colors.amber.withOpacity(0.1);
+        icon = Icon(Icons.watch_later_outlined, color: Colors.amber, size: 40);
         break;
       default:
-        // Default image if status_pendaftaran is not recognized
-        imagePath = 'assets/images/default.png';
+        backgroundColor = Colors.grey.withOpacity(0.1);
+        icon = Icon(Icons.notifications, color: Colors.grey, size: 40);
     }
 
     return GestureDetector(
       onTap: () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) =>
-        //         DetailNotifikasi(id_pendaftaran: notifikasi.id_pendaftaran),
-        //   ),
-        // );
-        // Add navigation functionality if needed
+        print('id_pendaftaran : ${notifikasi.id_pendaftaran}');
+        Get.to(
+            () => DetailNotifikasi(id_pendaftaran: notifikasi.id_pendaftaran));
       },
       child: Container(
-        height: 111,
+        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        padding: EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Color(0xffC4EFD2),
-          borderRadius: BorderRadius.circular(7.0),
+          color: Colors.white, // Set background color to white
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 3), // changes position of shadow
+            ),
+          ],
         ),
-        padding: EdgeInsets.all(10.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  image:
-                      AssetImage(imagePath), // Use AssetImage for local images
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            SizedBox(width: 10),
-            Flexible(
+            icon,
+            SizedBox(width: 16),
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Pendaftaran Anda " + notifikasi.status_pendaftaran,
-                    style: notifikasi.status_pendaftaran == "Diproses"
-                        ? CustomTextStyles.notifikasi
-                        : notifikasi.status_pendaftaran == "Ditolak"
-                            ? CustomTextStyles.notifikasiditolak
-                            : CustomTextStyles.notifikaditerima,
+                    notifikasi.status_pendaftaran,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.black, // Set text color to black
+                    ),
                   ),
-
+                  SizedBox(height: 8),
                   Text(
-                    notifikasi.tanggal_pendaftaran,
-                    style: CustomTextStyles.poppin12black,
+                    'Tanggal Pendaftaran: ${notifikasi.tanggal_pendaftaran}',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black87, // Set text color to black87
+                    ),
                   ),
-                  SizedBox(height: 5),
+                  SizedBox(height: 8),
                   Text(
-                    notifikasi.jenis_poli,
-                    style: CustomTextStyles.poppin12black,
+                    'Jenis Poli: ${notifikasi.jenis_poli}',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black87, // Set text color to black87
+                    ),
                   ),
-                  SizedBox(height: 5),
-                  // Implementasi berdasarkan nilai status_pendaftaran
-                  if (notifikasi.status_pendaftaran == 'Ditolak')
-                    SizedBox(), // Tidak ada widget di sini
-                  if (notifikasi.status_pendaftaran == 'Diterima')
-                    SizedBox(), // Tidak ada widget di sini
-                  if (notifikasi.status_pendaftaran == 'Diproses')
-                    SizedBox(), // Tidak ada widget di sini
                 ],
               ),
             ),

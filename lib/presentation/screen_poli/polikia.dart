@@ -86,7 +86,7 @@ class _PoliKIAState extends State<PoliKIA> {
   }
 
   bool isHoliday(DateTime date) {
-    if (date.weekday == DateTime.saturday || date.weekday == DateTime.sunday) {
+    if (date.weekday == DateTime.sunday) {
       return true;
     }
     for (DateTime holiday in _holidays) {
@@ -172,7 +172,7 @@ class _PoliKIAState extends State<PoliKIA> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'Tidak bisa memilih hari Sabtu dan Minggu.',
+                                'Tidak bisa memilih hari Minggu.',
                               ),
                             ),
                           );

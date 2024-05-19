@@ -35,7 +35,7 @@ class _ProfilState extends State<Profil> {
   Future<void> fetchUserData() async {
     try {
       final response = await http.get(Uri.parse(
-          'http://192.168.0.104/flutter/profil_read.php?nik=1234567890123456'));
+          'http://192.168.0.104:8080/flutter/profil_read.php?nik=1234567890123456'));
 
       print('STATUS CODE : ${response.statusCode}');
 
@@ -87,7 +87,7 @@ class _ProfilState extends State<Profil> {
                       child: ClipOval(
                         child: _user.img_profil.isNotEmpty
                             ? Image.network(
-                                'http://172.16.104.49/flutter/foto_profil/${_user.img_profil}',
+                                'http://192.168.0.104:8080/projek/images/profil/${_user.img_profil}',
                                 fit: BoxFit.cover,
                               )
                             : Image.asset(
