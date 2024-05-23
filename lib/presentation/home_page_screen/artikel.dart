@@ -106,8 +106,11 @@ class ArtikelBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final imageUrl = artikel.imgArtikel.isNotEmpty
-        ? Uri.http('172.16.104.49', artikel.imgArtikel).toString()
-        : 'assets/images/icon_artikel.png'; // Ganti dengan placeholder image
+        ? Uri.http('192.168.0.104:8080',
+                '/flutter/images/artikel/${artikel.imgArtikel}')
+            .toString()
+        : 'assets/images/chael.jpeg';
+// Ganti dengan placeholder image
 
     return GestureDetector(
       onTap: () {
@@ -120,7 +123,7 @@ class ArtikelBox extends StatelessWidget {
         );
       },
       child: Container(
-        height: 100,
+        height: 105,
         decoration: BoxDecoration(
           color: Color(0xffC4EFD2),
           borderRadius: BorderRadius.circular(7.0),
@@ -142,22 +145,16 @@ class ArtikelBox extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(width: 10),
+            SizedBox(width: 15),
             Flexible(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    artikel.judul,
+                    artikel.judul.length > 70
+                        ? '${artikel.judul.substring(0, 70)}...'
+                        : artikel.judul,
                     style: CustomTextStyles.notifikasi,
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    artikel.imgArtikel.isEmpty ? 'No Image Available' : '',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Color(0xff666666),
-                    ),
                   ),
                 ],
               ),

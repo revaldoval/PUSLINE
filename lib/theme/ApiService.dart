@@ -8,8 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 class ApiService {
-  final String baseUrl = "http://192.168.0.104:8080/projek";
-  final String imageUrl = "http://192.168.0.104:8080/projek/images/profil/";
+  final String baseUrl = "http://192.168.0.104:8080/flutter";
+  final String imageUrl = "http://192.168.0.104:8080/flutter/images/profil/";
 
   Future<Map<String, dynamic>> register(
       String nik,
@@ -315,48 +315,48 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> getUserData(
-      BuildContext context, String nik) async {
-    try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/get_user_data.php'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, dynamic>{
-          'nik': nik,
-        }),
-      );
+  // Future<Map<String, dynamic>> getUserData(
+  //     BuildContext context, String nik) async {
+  //   try {
+  //     final response = await http.post(
+  //       Uri.parse('$baseUrl/get_user_data.php'),
+  //       headers: <String, String>{
+  //         'Content-Type': 'application/json; charset=UTF-8',
+  //       },
+  //       body: jsonEncode(<String, dynamic>{
+  //         'nik': nik,
+  //       }),
+  //     );
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = json.decode(response.body);
+  //     if (response.statusCode == 200) {
+  //       final Map<String, dynamic> responseData = json.decode(response.body);
 
-        // Set user data to UserProvider after fetching from API
-        context.read<UserProvider>().setUserBaru(
-              UserModelBaru(
-                nik: responseData['nik'] ?? '',
-                nama: responseData['nama'] ?? '',
-                tanggal_lahir: responseData['tanggal_lahir'] ?? '',
-                jenis_kelamin: responseData['jenis_kelamin'] ?? '',
-                email: responseData['email'] ?? '',
-                no_telepon: responseData['no_telepon'] ?? '',
-                img_profil: responseData['img_profil'] ?? '',
-                kode_otp: responseData['kode_otp'] ?? '',
-                created_at: responseData['created_at'] ?? '',
-                updated_at: responseData['updated_at'] ??
-                    '', // Pastikan urutan parameter sesuai
-              ),
-            );
+  //       // Set user data to UserProvider after fetching from API
+  //       context.read<UserProvider>().setUserBaru(
+  //             UserModelBaru(
+  //               nik: responseData['nik'] ?? '',
+  //               nama: responseData['nama'] ?? '',
+  //               tanggal_lahir: responseData['tanggal_lahir'] ?? '',
+  //               jenis_kelamin: responseData['jenis_kelamin'] ?? '',
+  //               email: responseData['email'] ?? '',
+  //               no_telepon: responseData['no_telepon'] ?? '',
+  //               img_profil: responseData['img_profil'] ?? '',
+  //               kode_otp: responseData['kode_otp'] ?? '',
+  //               created_at: responseData['created_at'] ?? '',
+  //               updated_at: responseData['updated_at'] ??
+  //                   '', // Pastikan urutan parameter sesuai
+  //             ),
+  //           );
 
-        return responseData;
-      } else {
-        throw Exception(
-            'Failed to get product details. Server error: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error getting product details: $e');
-    }
-  }
+  //       return responseData;
+  //     } else {
+  //       throw Exception(
+  //           'Failed to get product details. Server error: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     throw Exception('Error getting product details: $e');
+  //   }
+  // }
 
   // Future<Map<String, dynamic>> getUserFotoProfil(
   //     BuildContext context, String username) async {

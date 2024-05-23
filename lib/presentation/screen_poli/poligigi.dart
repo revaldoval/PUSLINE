@@ -39,51 +39,13 @@ class _PoliGigiState extends State<PoliGigi> {
     super.initState();
     _dateController = TextEditingController();
     _complaintController = TextEditingController();
-    nomorantrian();
+
   }
 
-  int currentAntrian = 0; // Variabel untuk melacak nomor antrian saat ini
+// Variabel untuk melacak nomor antrian saat ini
   String NoAntrian = ''; // Variabel untuk menyimpan nomor antrian
 
-  String nomorantrian() {
-    if (currentAntrian <= 4) {
-      currentAntrian++;
-    } else {
-      resetAntrian();
-    }
-    NoAntrian = currentAntrian.toString();
-    return NoAntrian;
-  }
 
-  void resetAntrian() {
-    NoAntrian = '0';
-    if (currentAntrian == 4) {
-      String newFormat = _generateRandomFormat();
-      NoAntrian += '-' + newFormat;
-    }
-  }
-
-  void runResetAtMidnight() {
-    DateTime now = DateTime.now();
-    DateTime nextMidnight = DateTime(now.year, now.month, now.day + 1);
-    Duration durationUntilMidnight = nextMidnight.difference(now);
-
-    Timer(Duration(milliseconds: durationUntilMidnight.inMilliseconds), () {
-      resetAntrian();
-      runResetAtMidnight();
-    });
-  }
-
-  String _generateRandomFormat() {
-    List<String> formats = ['A', 'B', 'C', 'D'];
-    Random random = Random();
-    return formats[random.nextInt(formats.length)];
-  }
-
-  void main() {
-    nomorantrian();
-    runResetAtMidnight();
-  }
 
   bool isHoliday(DateTime date) {
     if (date.weekday == DateTime.sunday) {

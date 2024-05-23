@@ -15,7 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $query = "SELECT pendaftaran.id_pendaftaran, pendaftaran.status_pendaftaran, pendaftaran.tanggal_pendaftaran, poli_puskesmas.jenis_poli 
                   FROM pendaftaran 
                   INNER JOIN poli_puskesmas ON pendaftaran.id_poli = poli_puskesmas.id_poli 
-                  WHERE pendaftaran.nik = '$nik'";
+                  WHERE pendaftaran.nik = '$nik'
+                  ORDER BY pendaftaran.tanggal_pendaftaran DESC";
         $result = mysqli_query($conn, $query);
 
         if ($result && mysqli_num_rows($result) > 0) {

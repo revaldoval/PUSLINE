@@ -4,6 +4,9 @@ import 'dart:convert';
 import 'package:tolong_s_application1/presentation/models/user_model_baru.dart';
 import 'package:tolong_s_application1/presentation/ubah_profil/ubahprofil.dart';
 import 'package:tolong_s_application1/theme/custom_text_style.dart';
+import '../models/user_model_baru.dart';
+import '../models/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class Profil extends StatefulWidget {
   const Profil({Key? key}) : super(key: key);
@@ -33,9 +36,12 @@ class _ProfilState extends State<Profil> {
   }
 
   Future<void> fetchUserData() async {
+    UserModelBaru? user =
+        Provider.of<UserProvider>(context, listen: false).userBaru;
+    final String nik = user!.nik;
     try {
       final response = await http.get(Uri.parse(
-          'http://192.168.0.104:8080/flutter/profil_read.php?nik=1234567890123456'));
+          'http://192.168.0.104:8080/flutter/profil_read.php?nik=$nik'));
 
       print('STATUS CODE : ${response.statusCode}');
 
@@ -87,11 +93,11 @@ class _ProfilState extends State<Profil> {
                       child: ClipOval(
                         child: _user.img_profil.isNotEmpty
                             ? Image.network(
-                                'http://192.168.0.104:8080/projek/images/profil/${_user.img_profil}',
+                                'http://192.168.0.104:8080/flutter/images/profil/${_user.img_profil}',
                                 fit: BoxFit.cover,
                               )
                             : Image.asset(
-                                'assets/images/placeholder.png',
+                                'assets/images/null.jpg',
                                 fit: BoxFit.cover,
                               ), // Placeholder image
                       ),
