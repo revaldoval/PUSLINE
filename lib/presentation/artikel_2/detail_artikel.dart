@@ -71,7 +71,7 @@ class ArtikelPage extends StatelessWidget {
                         SizedBox(height: 20),
                         // Menggunakan Image.network untuk mengambil gambar dari jaringan
                         Image.network(
-                          'http://192.168.0.104:8080/${artikelDetail.imgArtikel}',
+                          'http://puskesline.tifnganjuk.com/${artikelDetail.imgArtikel}',
                           width: double.infinity,
                           height: 200,
                           fit: BoxFit.cover,

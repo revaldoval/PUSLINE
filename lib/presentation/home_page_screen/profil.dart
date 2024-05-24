@@ -41,7 +41,7 @@ class _ProfilState extends State<Profil> {
     final String nik = user!.nik;
     try {
       final response = await http.get(Uri.parse(
-          'http://192.168.0.104:8080/flutter/profil_read.php?nik=$nik'));
+          'http://puskesline.tifnganjuk.com/MobileApi/profil_read.php?nik=$nik'));
 
       print('STATUS CODE : ${response.statusCode}');
 
@@ -78,30 +78,40 @@ class _ProfilState extends State<Profil> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                      height: 70), // Added margin top for the profile photo
-                  ClipOval(
-                    child: Container(
-                      width: 87,
-                      height: 87,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 3,
+                      height: 40), // Added margin top for the profile photo
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        width: 480,
+                        height: 100,
+                        color: Color(0xff15AFA7),
+                      ),
+                      ClipOval(
+                        child: Container(
+                          width: 87,
+                          height: 87,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 3,
+                            ),
+                          ),
+                          child: ClipOval(
+                            child: _user.img_profil.isNotEmpty
+                                ? Image.network(
+                                    'http://puskesline.tifnganjuk.com/MobileApi/images/foto_profil/${_user.img_profil}',
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.asset(
+                                    'assets/images/null.jpg',
+                                    fit: BoxFit.cover,
+                                  ), // Placeholder image
+                          ),
                         ),
                       ),
-                      child: ClipOval(
-                        child: _user.img_profil.isNotEmpty
-                            ? Image.network(
-                                'http://192.168.0.104:8080/flutter/images/profil/${_user.img_profil}',
-                                fit: BoxFit.cover,
-                              )
-                            : Image.asset(
-                                'assets/images/null.jpg',
-                                fit: BoxFit.cover,
-                              ), // Placeholder image
-                      ),
-                    ),
+                    ],
                   ),
                   SizedBox(height: 23),
                   Text(
@@ -187,7 +197,7 @@ class _ProfilState extends State<Profil> {
                     ),
                     child: Center(
                       child: Text(
-                        _user?.tanggal_lahir ?? '',
+                        _user.tanggal_lahir,
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.black,
@@ -218,7 +228,7 @@ class _ProfilState extends State<Profil> {
                     ),
                     child: Center(
                       child: Text(
-                        _user?.jenis_kelamin ?? '',
+                        _user.jenis_kelamin,
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.black,

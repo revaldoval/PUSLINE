@@ -106,10 +106,8 @@ class ArtikelBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final imageUrl = artikel.imgArtikel.isNotEmpty
-        ? Uri.http('192.168.0.104:8080',
-                '/flutter/images/artikel/${artikel.imgArtikel}')
-            .toString()
-        : 'assets/images/chael.jpeg';
+        ? Uri.http('puskesline.tifnganjuk.com', artikel.imgArtikel).toString()
+        : 'assets/images/icon_artikel.png';
 // Ganti dengan placeholder image
 
     return GestureDetector(

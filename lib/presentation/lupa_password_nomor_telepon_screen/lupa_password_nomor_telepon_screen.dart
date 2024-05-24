@@ -36,6 +36,7 @@ class LupaPasswordNomorTeleponScreen extends StatelessWidget {
                                     style: theme.textTheme.titleSmall)),
                             SizedBox(height: 1.v),
                             CustomTextFormField(
+                                textStyle: TextStyle(color: Colors.white),
                                 controller: iconEmailResetController,
                                 textInputAction: TextInputAction.done,
                                 prefix: Container(

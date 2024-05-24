@@ -77,7 +77,7 @@ class _NotifikasiState extends State<Notifikasi> {
               if (snapshot.hasData) {
                 final notifications = snapshot.data!;
                 if (notifications.isEmpty) {
-                  return Center(child: Text('No notifications found'));
+                  return Center(child: Text('Belum ada notifikasi.'));
                 }
                 return ListView.builder(
                   itemCount: notifications.length,

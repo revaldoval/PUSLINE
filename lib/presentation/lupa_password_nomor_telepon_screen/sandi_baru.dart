@@ -45,6 +45,7 @@ class _SandiBaruState extends State<SandiBaru> {
                     ),
                     SizedBox(height: 1),
                     CustomTextFormField(
+                      textStyle: TextStyle(color: Colors.white),
                       controller: _passwordController,
                       textInputAction: TextInputAction.done,
                       prefix: Container(
@@ -81,6 +82,7 @@ class _SandiBaruState extends State<SandiBaru> {
                     ),
                     SizedBox(height: 1),
                     CustomTextFormField(
+                      textStyle: TextStyle(color: Colors.white),
                       controller: _confirmPasswordController,
                       textInputAction: TextInputAction.done,
                       prefix: Container(
@@ -175,14 +177,15 @@ class _SandiBaruState extends State<SandiBaru> {
         decoration: AppDecoration.outlineBlack900351
             .copyWith(borderRadius: BorderRadiusStyle.customBorderBL46),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          CustomAppBar(
-              leadingWidth: double.maxFinite,
-              leading: AppbarLeadingIconbutton(
-                  imagePath: ImageConstant.imgButtonKembaliReset,
-                  margin: EdgeInsets.only(left: 12.h, right: 327.h),
-                  onTap: () {
-                    onTapBUTTONKEMBALIRESET(context);
-                  })),
+          // CustomAppBar(
+          //     leadingWidth: double.maxFinite,
+          //     leading: AppbarLeadingIconbutton(
+          //         imagePath: ImageConstant.imgButtonKembaliReset,
+          //         margin: EdgeInsets.only(left: 12.h, right: 327.h),
+          //         onTap: () {
+          //           onTapBUTTONKEMBALIRESET(context);
+          //         })
+          //         ),
           SizedBox(height: 19.v),
           Container(
               alignment: Alignment.center,

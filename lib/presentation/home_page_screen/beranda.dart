@@ -14,6 +14,8 @@ import '../models/user_model_baru.dart';
 import '../models/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:tolong_s_application1/theme/ApiService.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Beranda extends StatefulWidget {
   const Beranda({Key? key}) : super(key: key);
@@ -24,6 +26,51 @@ class Beranda extends StatefulWidget {
 
 class _BerandaState extends State<Beranda> {
   DateTime today = DateTime.now();
+  late UserModelBaru _user = UserModelBaru(
+    nik: '',
+    nama: '',
+    tanggal_lahir: '',
+    jenis_kelamin: '',
+    no_telepon: '',
+    email: '',
+    img_profil: '',
+    kode_otp: '',
+    created_at: '',
+    updated_at: '',
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    UserModelBaru? user =
+        Provider.of<UserProvider>(context, listen: false).userBaru;
+    final String nik = user!.nik;
+    try {
+      final response = await http.get(Uri.parse(
+          'http://puskesline.tifnganjuk.com/MobileApi/profil_read.php?nik=$nik'));
+
+      print('STATUS CODE : ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        setState(() {
+          _user = UserModelBaru.fromJson(responseData['data']);
+        });
+
+        print(responseData['data']);
+      } else {
+        setState(() {});
+        throw Exception('Failed to load user data: ${response.statusCode}');
+      }
+    } catch (error) {
+      print(error);
+      setState(() {});
+    }
+  }
 
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
@@ -85,19 +132,10 @@ class _BerandaState extends State<Beranda> {
                               Row(children: [
                                 Container(
                                   alignment: Alignment.topLeft,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(25),
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      style: BorderStyle.solid,
-                                      width: 2,
-                                    ),
-                                  ),
                                   child: user != null && user.img_profil != null
                                       ? ClipOval(
                                           child: Image.network(
-                                            apiService.imageUrl +
-                                                user!.img_profil!,
+                                            'http://puskesline.tifnganjuk.com/MobileApi/images/foto_profil/${_user.img_profil}',
                                             width: 45,
                                             height: 45,
                                             fit: BoxFit.cover,
@@ -129,12 +167,12 @@ class _BerandaState extends State<Beranda> {
                                   child: Text(
                                     // '$greeting '
                                     'Selamat Datang! ' +
-                                        (user!.nama.toString().length > 10
-                                            ? user!.nama
+                                        (_user.nama.toString().length > 10
+                                            ? _user.nama
                                                     .toString()
                                                     .substring(0, 10) +
                                                 "..."
-                                            : user!.nama.toString()),
+                                            : _user.nama.toString()),
                                     style: CustomTextStyles.poppin15,
                                   ),
                                 ),

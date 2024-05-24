@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:tolong_s_application1/core/app_export.dart';
 import 'package:tolong_s_application1/theme/ApiService.dart';
 
-
 // ignore_for_file: must_be_immutable
 class RegisterPageScreen extends StatefulWidget {
   RegisterPageScreen({Key? key}) : super(key: key);
@@ -35,7 +34,6 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
       TextEditingController();
 
   final ApiService apiService = ApiService();
-
 
   bool isObscure = true;
   FocusNode _nikFocus = FocusNode();
@@ -187,7 +185,7 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
                                                 "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
                                             hintStyle: TextStyle(
                                               color: Colors
-                                                  .black, // Warna teks hitam
+                                                  .white, // Warna teks hitam
                                             ),
                                           ),
                                         ),
@@ -282,6 +280,7 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
     return Padding(
         padding: EdgeInsets.only(left: 51.h, right: 32.h),
         child: CustomTextFormField(
+            textStyle: TextStyle(color: Colors.white),
             controller: logonikregisterpageController,
             prefix: Container(
                 margin: EdgeInsets.fromLTRB(20.h, 8.v, 30.h, 7.v),
@@ -298,6 +297,7 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
     return Padding(
         padding: EdgeInsets.only(left: 51.h, right: 32.h),
         child: CustomTextFormField(
+          textStyle: TextStyle(color: Colors.white),
           controller: logonamaregisterpagController,
           prefix: Container(
               margin: EdgeInsets.fromLTRB(21.h, 6.v, 30.h, 6.v),
@@ -321,71 +321,76 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
       decoration: AppDecoration.outlineOnPrimary.copyWith(
         borderRadius: BorderRadiusStyle.circleBorder18,
       ),
-      child: DropdownButton<String>(
-        alignment: Alignment.centerLeft,
-        value: dropdownValue,
-        icon: Icon(Icons.arrow_drop_down),
-        iconSize: 30,
-        elevation: 16,
-        style: TextStyle(
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          alignment: Alignment.centerLeft,
+          value: dropdownValue,
+          icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+          iconSize: 30,
+          elevation: 16,
+          dropdownColor:
+              Color(0xFF49A18C), // Set dropdown background color to black
+          style: TextStyle(
             color: dropdownValue != null
-                ? Colors.black
-                : Colors.black), // Adjusting the hint text color
-        onChanged: (String? newValue) {
-          // Update state when the dropdown value changes
-          setState(() {
-            dropdownValue = newValue;
-            controller.text = newValue ?? ''; // Update controller value
-          });
-        },
-        items: <String?>[
-          null,
-          'Laki-Laki',
-          'Perempuan'
-        ] // Adding null as the first item for the hint text
-            .map<DropdownMenuItem<String>>((String? value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: value != null
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment:
-                        CrossAxisAlignment.center, // Align items center left
-                    children: [
-                      CustomImageView(
-                        // You can replace this with your actual image paths
-                        imagePath: value == 'Laki-Laki'
-                            ? ImageConstant.imgIconjeniskelaminRegisterpag
-                            : ImageConstant.imgIconjeniskelaminRegisterpag,
-                        height: value == 'Laki-Laki' ? 25.v : 26.adaptSize,
-                        width: value == 'Laki-Laki' ? 22.h : 26.adaptSize,
-
-                        margin: EdgeInsets.only(
-                          left: value == 'Laki-Laki' ? 1.h : 0,
-                          top: value == 'Laki-Laki' ? 1.v : 0,
+                ? Colors.white
+                : Colors.white, // Adjusting the hint text color
+          ),
+          onChanged: (String? newValue) {
+            // Update state when the dropdown value changes
+            setState(() {
+              dropdownValue = newValue;
+              controller.text = newValue ?? ''; // Update controller value
+            });
+          },
+          items: <String?>[
+            null,
+            'Laki-Laki',
+            'Perempuan'
+          ] // Adding null as the first item for the hint text
+              .map<DropdownMenuItem<String>>((String? value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: value != null
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment:
+                          CrossAxisAlignment.center, // Align items center left
+                      children: [
+                        CustomImageView(
+                          // You can replace this with your actual image paths
+                          imagePath: value == 'Laki-Laki'
+                              ? ImageConstant.imgIconjeniskelaminRegisterpag
+                              : ImageConstant.imgIconjeniskelaminRegisterpag,
+                          height: value == 'Laki-Laki' ? 25.v : 26.adaptSize,
+                          width: value == 'Laki-Laki' ? 22.h : 26.adaptSize,
+                          margin: EdgeInsets.only(
+                            left: value == 'Laki-Laki' ? 1.h : 0,
+                            top: value == 'Laki-Laki' ? 1.v : 0,
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 10), // Adjust as needed
-                      Text(value),
-                    ],
-                  )
-                : Row(
-                    children: [
-                      CustomImageView(
-                        imagePath: ImageConstant.imgIconjeniskelaminRegisterpag,
-                        height: 25.v,
-                        width: 22.h,
-                        margin: EdgeInsets.only(right: 10),
-                      ),
-                      Text(
-                        // Displaying hint text
-                        'Pilih Jenis Kelamin',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ],
-                  ),
-          );
-        }).toList(),
+                        SizedBox(width: 10), // Adjust as needed
+                        Text(value, style: TextStyle(color: Colors.white)),
+                      ],
+                    )
+                  : Row(
+                      children: [
+                        CustomImageView(
+                          imagePath:
+                              ImageConstant.imgIconjeniskelaminRegisterpag,
+                          height: 25.v,
+                          width: 22.h,
+                          margin: EdgeInsets.only(right: 10),
+                        ),
+                        Text(
+                          // Displaying hint text
+                          'Pilih Jenis Kelamin',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }
@@ -394,6 +399,7 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
     return Padding(
         padding: EdgeInsets.only(left: 51.h, right: 32.h),
         child: CustomTextFormField(
+            textStyle: TextStyle(color: Colors.white),
             controller: iconnemailregisterController,
             prefix: Container(
                 margin: EdgeInsets.fromLTRB(21.h, 6.v, 30.h, 6.v),
@@ -408,6 +414,7 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
     return Padding(
         padding: EdgeInsets.only(left: 51.h, right: 32.h),
         child: CustomTextFormField(
+            textStyle: TextStyle(color: Colors.white),
             controller: iconnomorteleponregisterController,
             allowOnlyNumbers: true,
             prefix: Container(
@@ -430,6 +437,7 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
     return Padding(
       padding: EdgeInsets.only(left: 51.h, right: 32.h),
       child: CustomTextFormField(
+        textStyle: TextStyle(color: Colors.white),
         controller: iconkatasandiregisterpagController,
         textInputAction: TextInputAction.done,
         prefix: Container(
@@ -460,6 +468,7 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
     return Padding(
       padding: EdgeInsets.only(left: 51.h, right: 32.h),
       child: CustomTextFormField(
+        textStyle: TextStyle(color: Colors.white),
         controller: iconkonfirmkatasandiregisterpagController,
         textInputAction: TextInputAction.done,
         prefix: Container(
@@ -609,7 +618,6 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
                       context, errorMessage, "Gagal!", Icons.error, Colors.red);
                 }
               } else {
-
                 // Email is not found, proceed to OTP page
                 Navigator.push(
                   context,
@@ -625,7 +633,6 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
                     ),
                   ),
                 );
-                
               }
             } catch (e) {
               // Handle errors

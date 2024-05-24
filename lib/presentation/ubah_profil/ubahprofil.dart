@@ -9,6 +9,10 @@ import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:tolong_s_application1/presentation/home_page_screen/profil.dart';
 import 'package:tolong_s_application1/theme/custom_text_style.dart';
+import '../models/user_model_baru.dart';
+import '../models/user_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:tolong_s_application1/theme/ApiService.dart';
 
 class UbahProfil extends StatefulWidget {
   const UbahProfil({Key? key}) : super(key: key);
@@ -35,15 +39,25 @@ class _UbahProfilState extends State<UbahProfil> {
 
   Future<void> _fetchProfilData() async {
     try {
+      final apiService = ApiService();
+      UserModelBaru? user =
+          Provider.of<UserProvider>(context, listen: false).userBaru;
+      final String nik = user!.nik;
       final response = await http.get(Uri.parse(
-          'http://172.16.106.129/flutter/profil_update.php?nik=1111111111111111'));
+          'http://puskesline.tifnganjuk.com/MobileApi/profil_update.php?nik=$nik'));
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         print('on success');
         setState(() {
           _profilData = jsonData['data'];
-          fotoProfile =
-              'http://172.16.106.129/flutter/foto_profil/${_profilData!['img_profil'] ?? ''}';
+          if (_profilData?['img_profil'] == null ||
+              _profilData?['img_profil'] == '') {
+            fotoProfile =
+                'http://puskesline.tifnganjuk.com/MobileApi/images/foto_profil/null.jpg';
+          } else {
+            fotoProfile =
+                'http://puskesline.tifnganjuk.com/MobileApi/images/foto_profil/${_profilData!['img_profil'] ?? ''}';
+          }
           print('foto profile : $fotoProfile');
           _imageFile = null;
           _controllers = {
@@ -103,7 +117,8 @@ class _UbahProfilState extends State<UbahProfil> {
   }
 
   Future<void> updateProfile() async {
-    final url = Uri.parse('https://172.16.106.129/flutter/profil_update.php');
+    final url = Uri.parse(
+        'https://puskesline.tifnganjuk.com/MobileApi/profil_update.php');
     final httpClient = await createHttpClient();
     final request = http.MultipartRequest('POST', url)
       ..fields['nama'] = _controllers['nama']?.text ?? ''
@@ -114,9 +129,9 @@ class _UbahProfilState extends State<UbahProfil> {
 
     if (_imageFile != null) {
       request.files.add(await http.MultipartFile.fromPath(
-        'img_profil', // Make sure the field name matches the PHP script
+        'img_profil', // Match the PHP code
         _imageFile!.path,
-        filename: 'image.jpg',
+        filename: 'img_profil', // Match the PHP code
       ));
     }
 
@@ -158,10 +173,10 @@ class _UbahProfilState extends State<UbahProfil> {
               onPressed: () {
                 Navigator.of(context).pop();
                 if (message == 'Berhasil mengubah profil') {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => Profil()),
-                  );
+                  // Navigator.pushReplacement(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => Profil()),
+                  // );
                 }
               },
               child: Text(

@@ -80,8 +80,8 @@ class _DetailNotifikasiState extends State<DetailNotifikasi> {
             ),
             Positioned(
               top: 180,
-              left: 20,
-              right: 20,
+              left: 30,
+              right: 30,
               height: 550,
               child: Container(
                 decoration: BoxDecoration(

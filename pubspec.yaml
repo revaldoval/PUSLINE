@@ -13,6 +13,7 @@ dependencies:
   provider: ^6.1.1
   email_otp: ^2.1.0
   image_picker: ^0.8.4+4
+  flutter_launcher_icons: ^0.13.1
   logger: ^1.1.0
   # cached_network_image: ^3.1.0
   shared_preferences: ^2.0.7
@@ -46,5 +47,11 @@ flutter:
         - asset: assets/fonts/PoppinsMedium.ttf
           weight: 500
 
-
+flutter_launcher_icons:
+  image_path: "assets/images/pusline_logo.png"
+  android: true
+  ios: true
+  web: false
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/images/pusline_logo.png"
           

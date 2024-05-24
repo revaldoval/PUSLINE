@@ -197,6 +197,7 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
                   Padding(
                       padding: EdgeInsets.only(left: 45.h, right: 44.h),
                       child: CustomTextFormField(
+                          textStyle: TextStyle(color: Colors.white),
                           // allowOnlyNumbers: true,
                           controller: logonikloginpageController,
                           prefix: Container(
@@ -298,6 +299,7 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
             child: Text("Kata Sandi", style: theme.textTheme.titleSmall)),
         SizedBox(height: 1.v),
         CustomTextFormField(
+            textStyle: TextStyle(color: Colors.white),
             controller: logokatasandiloginpageController,
             textInputAction: TextInputAction.done,
             prefix: Container(

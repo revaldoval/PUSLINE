@@ -68,6 +68,7 @@ class _LupaOtpState extends State<LupaOtp> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 4.0),
                             child: TextFormField(
+                              style: TextStyle(color: Colors.white),
                               controller: controllers[index],
                               focusNode: focusNodes[index],
                               textAlign: TextAlign.center,
@@ -79,6 +80,11 @@ class _LupaOtpState extends State<LupaOtp> {
                                         .requestFocus(focusNodes[index + 1]);
                                   } else {
                                     FocusScope.of(context).unfocus();
+                                  }
+                                } else if (value.isEmpty) {
+                                  if (index > 0) {
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNodes[index - 1]);
                                   }
                                 }
                                 otpController.text = controllers
@@ -102,6 +108,7 @@ class _LupaOtpState extends State<LupaOtp> {
                         );
                       }),
                     ),
+
                     SizedBox(
                         height:
                             10), // Tambahkan jarak antara kolom pertama dan kedua
