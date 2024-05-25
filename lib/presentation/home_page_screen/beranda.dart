@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import 'package:tolong_s_application1/theme/ApiService.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:get/get.dart';
 
 class Beranda extends StatefulWidget {
   const Beranda({Key? key}) : super(key: key);
@@ -244,36 +245,30 @@ class _BerandaState extends State<Beranda> {
                                     imagePath: "assets/images/PoliUmumBG.png",
                                     title: "Poli Umum",
                                     onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => PoliUmum(),
-                                        ),
-                                      );
+                                      Get.to(() => PoliUmum(),
+                                          transition: Transition.fadeIn);
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //     builder: (context) => PoliUmum(),
+                                      //   ),
+                                      // );
                                     },
                                   ),
                                   Category(
                                     imagePath: "assets/images/GigiBG.png",
                                     title: "Poli Gigi",
                                     onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => PoliGigi(),
-                                        ),
-                                      );
+                                      Get.to(() => PoliGigi(),
+                                          transition: Transition.fadeIn);
                                     },
                                   ),
                                   Category(
                                     imagePath: "assets/images/PoliUmumBG.png",
                                     title: "Poli KIA",
                                     onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => PoliKIA(),
-                                        ),
-                                      );
+                                      Get.to(() => PoliKIA(),
+                                          transition: Transition.fadeIn);
                                     },
                                   ),
                                 ],
@@ -286,36 +281,24 @@ class _BerandaState extends State<Beranda> {
                                     imagePath: "assets/images/GiziBG.png",
                                     title: "Poli Gizi",
                                     onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => PoliGizi(),
-                                        ),
-                                      );
+                                      Get.to(() => PoliGizi(),
+                                          transition: Transition.fadeIn);
                                     },
                                   ),
                                   Category(
                                     imagePath: "assets/images/MtbsBG.png",
                                     title: "Poli MTBS",
                                     onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => PoliMTBS(),
-                                        ),
-                                      );
+                                      Get.to(() => PoliMTBS(),
+                                          transition: Transition.fadeIn);
                                     },
                                   ),
                                   Category(
                                     imagePath: "assets/images/ImunisasiBG.png",
                                     title: "Imunisasi",
                                     onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => Imunisasi(),
-                                        ),
-                                      );
+                                      Get.to(() => Imunisasi(),
+                                          transition: Transition.fadeIn);
                                     },
                                   ),
                                 ],

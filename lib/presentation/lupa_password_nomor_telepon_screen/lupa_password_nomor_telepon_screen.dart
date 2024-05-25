@@ -94,7 +94,8 @@ class LupaPasswordNomorTeleponScreen extends StatelessWidget {
                                           Colors.red);
                                     }
                                   }
-                                }),
+                                }
+                                ),
                             SizedBox(height: 5.v)
                           ]))
                 ]))));

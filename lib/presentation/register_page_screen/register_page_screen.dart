@@ -84,7 +84,7 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
                     child: Padding(
                         padding: EdgeInsets.only(bottom: 5.v),
                         child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               _buildSilahkanMendaftar(context),
                               SizedBox(height: 22.v),
@@ -142,7 +142,8 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
                                 child: Container(
                                   height: 72.v,
                                   width: 277.h,
-                                  margin: EdgeInsets.only(right: 32.h),
+                                  margin:
+                                      EdgeInsets.only(right: 32.h, left: 70),
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 17.h, vertical: 2.v),
                                   decoration:
@@ -265,8 +266,11 @@ class _RegisterPageScreenState extends State<RegisterPageScreen> {
           SizedBox(height: 28.v),
           Container(
               decoration: AppDecoration.outlineBlack90035,
-              child: Text("Silahkan Mendaftar Di Bawah Ini",
-                  style: CustomTextStyles.titleMedium18)),
+              child: Text(
+                "Silahkan Mendaftar\n Di Bawah Ini",
+                style: CustomTextStyles.titleMedium18,
+                textAlign: TextAlign.center,
+              )),
           SizedBox(height: 16.v),
           CustomImageView(
               imagePath: ImageConstant.imgImage1481,

@@ -5,6 +5,7 @@ import 'package:tolong_s_application1/theme/ApiService.dart';
 import 'package:tolong_s_application1/theme/custom_text_style.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:get/get.dart';
 
 class Artikel extends StatefulWidget {
   const Artikel({Key? key}) : super(key: key);
@@ -24,9 +25,10 @@ class _ArtikelState extends State<Artikel> {
 
   Future<List<ArtikelListModel>> fetchArtikels() async {
     final apiService = ApiService();
+
     try {
-      final response = await http.get(
-          Uri.parse('${apiService.baseUrl}/artikel_list.php?id_artikel=1'));
+      final response =
+          await http.get(Uri.parse('${apiService.baseUrl}/artikel_list.php'));
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
         if (responseData['status'] == 'success') {
@@ -62,7 +64,7 @@ class _ArtikelState extends State<Artikel> {
           backgroundColor: Color(0xFF49A18C),
         ),
         body: Padding(
-          padding: EdgeInsets.only(top: 3),
+          padding: EdgeInsets.all(8),
           child: FutureBuilder<List<ArtikelListModel>>(
             future: _artikelList,
             builder: (context, snapshot) {
@@ -76,7 +78,7 @@ class _ArtikelState extends State<Artikel> {
                   itemBuilder: (context, index) {
                     final artikel = artikels[index];
                     return Padding(
-                      padding: EdgeInsets.symmetric(vertical: 3, horizontal: 6),
+                      padding: EdgeInsets.symmetric(vertical: 8),
                       child: ArtikelBox(
                         artikel: artikel,
                         apiService: ApiService(), // Pass ApiService instance
@@ -108,56 +110,63 @@ class ArtikelBox extends StatelessWidget {
     final imageUrl = artikel.imgArtikel.isNotEmpty
         ? Uri.http('puskesline.tifnganjuk.com', artikel.imgArtikel).toString()
         : 'assets/images/icon_artikel.png';
-// Ganti dengan placeholder image
 
     return GestureDetector(
       onTap: () {
         print('artikel id from list : ${artikel.judul}');
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ArtikelPage(artikelId: artikel.idArtikel),
-          ),
-        );
+        Get.to(() => ArtikelPage(artikelId: artikel.idArtikel),
+            transition: Transition.fadeIn);
       },
-      child: Container(
-        height: 105,
-        decoration: BoxDecoration(
-          color: Color(0xffC4EFD2),
-          borderRadius: BorderRadius.circular(7.0),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
         ),
-        padding: EdgeInsets.all(10.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                // Menggunakan Image.network dengan URL yang sudah diformat dengan host
-                image: DecorationImage(
-                  image: NetworkImage(
-                      imageUrl), // Menggunakan URL gambar yang sudah diformat dengan host
+        color: Colors.white, // Ubah warna latar belakang card
+        child: Padding(
+          padding: EdgeInsets.all(8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  imageUrl,
+                  width: 100,
+                  height: 100,
                   fit: BoxFit.cover,
                 ),
               ),
-            ),
-            SizedBox(width: 15),
-            Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    artikel.judul.length > 70
-                        ? '${artikel.judul.substring(0, 70)}...'
-                        : artikel.judul,
-                    style: CustomTextStyles.notifikasi,
-                  ),
-                ],
+              SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      artikel.judul,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black, // Ubah warna judul
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      artikel.isiArtikel,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                      ),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

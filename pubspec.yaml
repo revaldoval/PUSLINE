@@ -21,7 +21,7 @@ dependencies:
     sdk: flutter
     
   # date_time_picker: "^2.1.0"
-  # google_fonts: ^6.2.0
+  google_fonts: ^6.2.0
   flutter_riverpod: ^1.0.3
   flutter_svg: ^2.0.9
   intl: ^0.18.1
@@ -49,7 +49,7 @@ flutter:
 
 flutter_launcher_icons:
   image_path: "assets/images/pusline_logo.png"
-  android: true
+  android: "pusline_logo"
   ios: true
   web: false
   adaptive_icon_background: "#ffffff"

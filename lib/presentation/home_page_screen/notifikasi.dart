@@ -9,7 +9,6 @@ import '../models/notifikasi_model.dart'; // Ubah import sesuai dengan nama file
 import '../models/user_model_baru.dart';
 import '../models/user_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:get/get.dart';
 
 class Notifikasi extends StatefulWidget {
   const Notifikasi({Key? key}) : super(key: key);
@@ -222,7 +221,8 @@ class NotifBox extends StatelessWidget {
       onTap: () {
         print('id_pendaftaran : ${notifikasi.id_pendaftaran}');
         Get.to(
-            () => DetailNotifikasi(id_pendaftaran: notifikasi.id_pendaftaran));
+            () => DetailNotifikasi(id_pendaftaran: notifikasi.id_pendaftaran),
+            transition: Transition.fadeIn);
       },
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),

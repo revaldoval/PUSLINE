@@ -41,7 +41,7 @@ class ArtikelPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: EdgeInsets.all(16.0),
+                    padding: EdgeInsets.all(30.0),
                     child: Column(
                       children: [
                         Text(
@@ -50,14 +50,14 @@ class ArtikelPage extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 24.0,
                             fontWeight: FontWeight.bold,
-                            color: Color(0XFF15AFA7),
+                            color: Color(0xFF398172),
                           ),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         ),
                         SizedBox(height: 10),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Icon(Icons.calendar_today),
                             SizedBox(width: 5),

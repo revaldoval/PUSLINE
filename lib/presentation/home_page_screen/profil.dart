@@ -4,9 +4,11 @@ import 'dart:convert';
 import 'package:tolong_s_application1/presentation/models/user_model_baru.dart';
 import 'package:tolong_s_application1/presentation/ubah_profil/ubahprofil.dart';
 import 'package:tolong_s_application1/theme/custom_text_style.dart';
+import 'package:tolong_s_application1/widgets/buttondaftarpasien.dart';
 import '../models/user_model_baru.dart';
 import '../models/user_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 
 class Profil extends StatefulWidget {
   const Profil({Key? key}) : super(key: key);
@@ -69,6 +71,7 @@ class _ProfilState extends State<Profil> {
       home: Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
+          physics: NeverScrollableScrollPhysics(),
           padding: EdgeInsets.only(bottom: 100), // Added margin bottom here
           child: Center(
             child: Padding(
@@ -78,42 +81,62 @@ class _ProfilState extends State<Profil> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                      height: 40), // Added margin top for the profile photo
+                      height: 20), // Added margin top for the profile photo
                   Stack(
                     alignment: Alignment.center,
                     children: [
                       Container(
                         width: 480,
                         height: 100,
-                        color: Color(0xff15AFA7),
+                        decoration: BoxDecoration(
+                          color: Color(0xFF49A18C),
+                          borderRadius: BorderRadius.circular(
+                              7), // Set the desired radius here
+                        ),
                       ),
-                      ClipOval(
-                        child: Container(
-                          width: 87,
-                          height: 87,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.white,
-                              width: 3,
+                      Transform.translate(
+                        offset:
+                            Offset(0, 30), // Move the circle down by 30 pixels
+                        child: ClipOval(
+                          child: Container(
+                            width: 87,
+                            height: 87,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 3,
+                              ),
                             ),
-                          ),
-                          child: ClipOval(
-                            child: _user.img_profil.isNotEmpty
-                                ? Image.network(
-                                    'http://puskesline.tifnganjuk.com/MobileApi/images/foto_profil/${_user.img_profil}',
-                                    fit: BoxFit.cover,
-                                  )
-                                : Image.asset(
-                                    'assets/images/null.jpg',
-                                    fit: BoxFit.cover,
-                                  ), // Placeholder image
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.white, // White background
+                                  ),
+                                ),
+                                ClipOval(
+                                  child: _user.img_profil.isNotEmpty
+                                      ? Image.network(
+                                          'http://puskesline.tifnganjuk.com/MobileApi/images/foto_profil/${_user.img_profil}',
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Image.asset(
+                                          'assets/images/null.jpg',
+                                          fit: BoxFit.cover,
+                                        ), // Placeholder image
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 23),
+
+                  SizedBox(height: 46),
                   Text(
                     'Nama Lengkap',
                     style: TextStyle(
@@ -268,31 +291,56 @@ class _ProfilState extends State<Profil> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 58),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => UbahProfil(),
+                  SizedBox(height: 40),
+                  Container(
+                    width: 480,
+                    child: ButtonDaftarPasien(
+                      text: 'Ubah Profil',
+                      onPressed: () {
+                        Get.to(() => UbahProfil(),
+                                transition: Transition.fadeIn)!
+                            .then((_) {
+                          fetchUserData();
+                        });
+                      },
+                      buttonStyle: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                            vertical:
+                                6), // Sesuaikan padding dengan gaya pada halaman Imunisasi
+                        primary: Color(
+                            0xFF49A18C), // Sesuaikan warna latar belakang tombol dengan gaya pada halaman Imunisasi
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              4), // Sesuaikan border radius dengan gaya pada halaman Imunisasi
                         ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      minimumSize: Size(MediaQuery.of(context).size.width - 32,
-                          60), // Updated minimumSize value
-                      backgroundColor: Color(0xFF15AFA7),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
                       ),
                     ),
-                    child: Text(
-                      'Ubah Profil',
-                      style: CustomTextStyles.poppins13
-                          .copyWith(color: Colors.white),
-                    ),
-                  ),
+                  )
+
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder: (context) => UbahProfil(),
+                  //       ),
+                  //     );
+                  //   },
+                  //   style: ElevatedButton.styleFrom(
+                  //     padding: EdgeInsets.symmetric(horizontal: 20),
+                  //     minimumSize: Size(MediaQuery.of(context).size.width - 32,
+                  //         60), // Updated minimumSize value
+                  //     backgroundColor: Color(0xFF15AFA7),
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(4),
+                  //     ),
+                  //   ),
+                  //   child: Text(
+                  //     'Ubah Profil',
+                  //     style: CustomTextStyles.poppins13
+                  //         .copyWith(color: Colors.white),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

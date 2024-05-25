@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tolong_s_application1/presentation/home_page_screen/home_page_screen.dart';
 import 'package:tolong_s_application1/theme/custom_text_style.dart';
+import 'package:tolong_s_application1/widgets/buttondaftarpasien.dart';
 import '../home_page_screen/beranda.dart';
 import '../home_page_screen/home_page_screen.dart';
 import 'package:get/get.dart';
@@ -164,8 +165,9 @@ class _ImunisasiState extends State<Imunisasi> {
                   ),
                 ),
               ),
-              SizedBox(height: 220),
-              ElevatedButton(
+              SizedBox(height: 350),
+              ButtonDaftarPasien(
+                text: 'Daftar Pasien',
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -190,7 +192,7 @@ class _ImunisasiState extends State<Imunisasi> {
                             children: [
                               Container(
                                 decoration: BoxDecoration(
-                                  color: Color(0xFF15AFA7),
+                                  color: Color(0xFF49A18C),
                                   borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(20),
                                     topRight: Radius.circular(20),
@@ -235,7 +237,7 @@ class _ImunisasiState extends State<Imunisasi> {
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(15),
                                         side: BorderSide(
-                                            color: Color(0xFF15AFA7)),
+                                            color: Color(0xFF49A18C)),
                                       ),
                                     ),
                                     child: Padding(
@@ -255,33 +257,30 @@ class _ImunisasiState extends State<Imunisasi> {
                                     onPressed: () {
                                       if (_dateController.text.isEmpty) {
                                         // Tampilkan pesan kesalahan jika _dateController kosong
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: Text("Gagal!",
-                                                  textAlign: TextAlign.center),
-                                              content: Text(
-                                                  "Tanggal harus diisi.",
-                                                  textAlign: TextAlign.center),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  child: Text("OK"),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                )
-                                              ],
-                                            );
-                                          },
+                                        alert(
+                                          context,
+                                          "Tanggal harus diisi.",
+                                          "Gagal!",
+                                          Icons.error,
+                                          Colors.red,
+                                        );
+                                      } else if (_complaintController
+                                          .text.isEmpty) {
+                                        // Tampilkan pesan kesalahan jika _complaintController kosong
+                                        alert(
+                                          context,
+                                          "Keluhan harus diisi.",
+                                          "Gagal!",
+                                          Icons.error,
+                                          Colors.red,
                                         );
                                       } else {
-                                        // Lanjutkan proses jika _dateController tidak kosong
+                                        // Lanjutkan proses jika kedua controller tidak kosong
                                         datarpoliimunisasi(context);
                                       }
                                     },
                                     style: ElevatedButton.styleFrom(
-                                      primary: Color(0xFF15AFA7),
+                                      primary: Color(0xFF49A18C),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(15),
                                       ),
@@ -308,20 +307,7 @@ class _ImunisasiState extends State<Imunisasi> {
                     },
                   );
                 },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  minimumSize: Size(double.infinity, 80),
-                  backgroundColor: Color(0xFF15AFA7),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                child: Text(
-                  'Daftar Pasien',
-                  style:
-                      CustomTextStyles.poppins13.copyWith(color: Colors.white),
-                ),
-              ),
+              )
             ],
           ),
         ),
@@ -355,6 +341,13 @@ class _ImunisasiState extends State<Imunisasi> {
             builder: (context) => HomePageScreen(),
           ),
         );
+        alert(
+          context,
+          "Berhasil mendaftar.",
+          "Berhasil!",
+          Icons.check,
+          Colors.green,
+        );
       } else {
         print('Registration failed: ${response['message']}');
       }
@@ -369,4 +362,97 @@ class _ImunisasiState extends State<Imunisasi> {
     _complaintController.dispose();
     super.dispose();
   }
+}
+
+void alert(BuildContext context, String message, String title, IconData icon,
+    Color color) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: contentBox(context, message, title, icon, color),
+      );
+    },
+  );
+}
+
+Widget contentBox(BuildContext context, String message, String title,
+    IconData icon, Color color) {
+  return Stack(
+    children: <Widget>[
+      Container(
+        padding: EdgeInsets.only(
+          left: 20,
+          top: 45,
+          right: 20,
+          bottom: 20,
+        ),
+        margin: EdgeInsets.only(top: 45),
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black,
+              offset: Offset(0, 10),
+              blurRadius: 10,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 15),
+            Text(
+              message,
+              style: TextStyle(
+                fontSize: 18,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 22),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'OKE',
+                  style: TextStyle(color: Color(0xFF49A18C)),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      Positioned(
+        top: 0,
+        left: 20,
+        right: 20,
+        child: CircleAvatar(
+          backgroundColor: color,
+          radius: 30,
+          child: Icon(
+            icon,
+            color: Colors.white,
+            size: 40,
+          ),
+        ),
+      ),
+    ],
+  );
 }

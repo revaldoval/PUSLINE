@@ -316,6 +316,30 @@ class ApiService {
     }
   }
 
+    Future<Map<String, dynamic>> beforenext3 (String email) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/beforenext3.php'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'email': email,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        return responseData;
+      } else {
+        throw Exception(
+            'Checked Email failed. Server error: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error during registration: $e');
+    }
+  }
+
   // Future<Map<String, dynamic>> getUserData(
   //     BuildContext context, String nik) async {
   //   try {

@@ -176,98 +176,106 @@ class _LoginPageScreenState extends State<LoginPageScreen> {
             resizeToAvoidBottomInset: false,
             body: SizedBox(
                 width: double.maxFinite,
-                child: Column(children: [
-                  _buildSelamatDatang(context),
-                  SizedBox(height: 6.v),
-                  Container(
-                      width: 264.h,
-                      margin: EdgeInsets.symmetric(horizontal: 48.h),
-                      decoration: AppDecoration.outlineBlack90035,
-                      child: Text("Masuk dengan NIK dan Kata Sandi",
-                          maxLines: null,
-                          overflow: TextOverflow.ellipsis,
-                          style: CustomTextStyles.titleSmallSemiBold)),
-                  SizedBox(height: 20.v),
-                  Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                          padding: EdgeInsets.only(left: 88.h),
-                          child:
-                              Text("NIK", style: theme.textTheme.titleSmall))),
-                  Padding(
-                      padding: EdgeInsets.only(left: 45.h, right: 44.h),
-                      child: CustomTextFormField(
-                          textStyle: TextStyle(color: Colors.white),
-                          // allowOnlyNumbers: true,
-                          controller: logonikloginpageController,
-                          prefix: Container(
-                              margin: EdgeInsets.fromLTRB(17.h, 9.v, 30.h, 9.v),
-                              child: CustomImageView(
-                                  imagePath: ImageConstant.imgLogonikloginpage,
-                                  height: 24.adaptSize,
-                                  width: 24.adaptSize)),
-                          allowOnlyNumbers: true,
-                          prefixConstraints: BoxConstraints(maxHeight: 42.v),
-                          borderDecoration:
-                              TextFormFieldStyleHelper.outlineOnPrimaryTL21)),
-                  SizedBox(height: 16.v),
-                  _buildSignUp(context),
-                  SizedBox(height: 5.v),
-                  Align(
-                      alignment: Alignment.centerLeft,
-                      child: GestureDetector(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _buildSelamatDatang(context),
+                      SizedBox(height: 6.v),
+                      Container(
+                          width: 264.h,
+                          margin: EdgeInsets.symmetric(horizontal: 48.h),
+                          decoration: AppDecoration.outlineBlack90035,
+                          child: Text("Masuk dengan NIK dan Kata Sandi",
+                              maxLines: null,
+                              overflow: TextOverflow.ellipsis,
+                              style: CustomTextStyles.titleSmallSemiBold)),
+                      SizedBox(height: 20.v),
+                      Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                              padding: EdgeInsets.only(left: 88.h),
+                              child: Text("NIK",
+                                  style: theme.textTheme.titleSmall))),
+                      Padding(
+                          padding: EdgeInsets.only(left: 45.h, right: 44.h),
+                          child: CustomTextFormField(
+                              textStyle: TextStyle(color: Colors.white),
+                              // allowOnlyNumbers: true,
+                              controller: logonikloginpageController,
+                              prefix: Container(
+                                  margin:
+                                      EdgeInsets.fromLTRB(17.h, 9.v, 30.h, 9.v),
+                                  child: CustomImageView(
+                                      imagePath:
+                                          ImageConstant.imgLogonikloginpage,
+                                      height: 24.adaptSize,
+                                      width: 24.adaptSize)),
+                              allowOnlyNumbers: true,
+                              prefixConstraints:
+                                  BoxConstraints(maxHeight: 42.v),
+                              borderDecoration: TextFormFieldStyleHelper
+                                  .outlineOnPrimaryTL21)),
+                      SizedBox(height: 16.v),
+                      _buildSignUp(context),
+                      SizedBox(height: 5.v),
+                      Align(
+                          alignment: Alignment.centerLeft,
+                          child: GestureDetector(
+                              onTap: () {
+                                onTapTxtLupaKataSandi(context);
+                              },
+                              child: Container(
+                                  width: 116.h,
+                                  margin: EdgeInsets.only(left: 86.h),
+                                  decoration: AppDecoration.outlineBlack90035,
+                                  child: Text("Lupa Kata Sandi?",
+                                      maxLines: null,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: theme.textTheme.labelLarge)))),
+                      SizedBox(height: 12.v),
+                      CustomElevatedButton(
+                          text: "MASUK",
+                          margin: EdgeInsets.only(left: 45.h, right: 44.h),
+                          onPressed: () {
+                            if (logonikloginpageController.text.isEmpty ||
+                                logokatasandiloginpageController.text.isEmpty) {
+                              alert(context, "Isi semua data terlebih dahulu");
+                            } else if (logonikloginpageController.text.length !=
+                                16) {
+                              alert(context,
+                                  "NIK harus terdiri dari 16 karakter");
+                            } else {
+                              _login(context);
+                            }
+                          }
+
+                          // onPressed: () {
+                          //   _login(context);
+                          // },
+                          ),
+                      SizedBox(height: 18.v),
+                      GestureDetector(
                           onTap: () {
-                            onTapTxtLupaKataSandi(context);
+                            onTapTxtBelumpunyaakun(context);
                           },
                           child: Container(
-                              width: 116.h,
-                              margin: EdgeInsets.only(left: 86.h),
+                              width: 255.h,
+                              margin: EdgeInsets.only(left: 52.h, right: 53.h),
                               decoration: AppDecoration.outlineBlack90035,
-                              child: Text("Lupa Kata Sandi?",
-                                  maxLines: null,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: theme.textTheme.labelLarge)))),
-                  SizedBox(height: 12.v),
-                  CustomElevatedButton(
-                      text: "MASUK",
-                      margin: EdgeInsets.only(left: 45.h, right: 44.h),
-                      onPressed: () {
-                        if (logonikloginpageController.text.isEmpty ||
-                            logokatasandiloginpageController.text.isEmpty) {
-                          alert(context, "Isi semua data terlebih dahulu");
-                        } else if (logonikloginpageController.text.length !=
-                            16) {
-                          alert(context, "NIK harus terdiri dari 16 karakter");
-                        } else {
-                          _login(context);
-                        }
-                      }
-
-                      // onPressed: () {
-                      //   _login(context);
-                      // },
-                      ),
-                  SizedBox(height: 18.v),
-                  GestureDetector(
-                      onTap: () {
-                        onTapTxtBelumpunyaakun(context);
-                      },
-                      child: Container(
-                          width: 255.h,
-                          margin: EdgeInsets.only(left: 52.h, right: 53.h),
-                          decoration: AppDecoration.outlineBlack90035,
-                          child: RichText(
-                              text: TextSpan(children: [
-                                TextSpan(
-                                    text: "Belum Punya Akun ?  ",
-                                    style: CustomTextStyles.titleSmallffffffff),
-                                TextSpan(
-                                    text: "Daftar Akun",
-                                    style: CustomTextStyles.titleSmallffefaf00)
-                              ]),
-                              textAlign: TextAlign.left))),
-                  SizedBox(height: 5.v)
-                ]))));
+                              child: RichText(
+                                  text: TextSpan(children: [
+                                    TextSpan(
+                                        text: "Belum Punya Akun ?  ",
+                                        style: CustomTextStyles
+                                            .titleSmallffffffff),
+                                    TextSpan(
+                                        text: "Daftar Akun",
+                                        style:
+                                            CustomTextStyles.titleSmallffefaf00)
+                                  ]),
+                                  textAlign: TextAlign.left))),
+                      SizedBox(height: 5.v)
+                    ]))));
   }
 
   /// Section Widget

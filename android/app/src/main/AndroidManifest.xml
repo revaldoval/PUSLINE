@@ -9,7 +9,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:label="Pusline"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/pusline_logo">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
